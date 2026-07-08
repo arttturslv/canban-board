@@ -18,11 +18,13 @@ import {
   MessageAvatar,
   MessageContent,
   MessageGroup,
+  MessageHeader,
 } from "../ui/message";
 import { Bubble, BubbleContent } from "../ui/bubble";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "@base-ui/react";
-import { mockTasks } from "../../db/mock-data";
+import { messages, mockTasks, users } from "../../db/mock-data";
+import { cn } from "../../lib/utils";
 
 interface EditTaskSheetProps {
   taskId: string | null;
@@ -47,6 +49,10 @@ export default function EditTaskSheet({
   const taskFound = taskId
     ? mockTasks.find((item) => item.id === taskId)
     : null;
+
+  const taskMessages = taskId
+    ? messages.filter((m) => m.taskId === taskId)
+    : [];
 
   const { register, handleSubmit } = useForm<taskForm>({
     values: {
@@ -144,38 +150,45 @@ export default function EditTaskSheet({
                 Comentários
               </span>
 
-              <div className="flex w-full max-w-sm flex-col gap-6 ">
-                <MessageGroup>
-                  <Message>
-                    <MessageAvatar />
-                    <MessageContent>
-                      <Bubble variant="default">
-                        <BubbleContent className="bg-black/15">
-                          I checked the registry addresses.
-                        </BubbleContent>
-                      </Bubble>
-                    </MessageContent>
-                  </Message>
-                  <Message>
-                    <MessageAvatar>
-                      <Avatar>
-                        <AvatarImage
-                          src="https://media.licdn.com/dms/image/v2/D4D03AQELAnAYqblCDw/profile-displayphoto-crop_800_800/B4DZ4iT4DCIMAI-/0/1778692101193?e=1785369600&v=beta&t=YP0-pcddqhTBnybmeglwS_Q0fOWN7ASDYY0zjpl0fN8"
-                          alt="@avatar"
-                        />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                    </MessageAvatar>
-                    <MessageContent>
-                      <Bubble variant="muted">
-                        <BubbleContent className="bg-black/15">
-                          The component and example JSON now live under the UI
-                          registry.
-                        </BubbleContent>
-                      </Bubble>
-                    </MessageContent>
-                  </Message>
-                </MessageGroup>
+              <div className="flex flex-col  w-full gap-6 ">
+                {taskMessages.map((message) => {
+                  const author = users.find(
+                    (user) => user.id === message.authorId,
+                  )!;
+                  const isCurrentUser = author.id === "user-1";
+
+                  return (
+                    <Message
+                      align={isCurrentUser ? "end" : "start"}
+                      key={message.id}
+                    >
+                      <MessageAvatar>
+                        <Avatar>
+                          <AvatarImage src={author.avatar} />
+                          <AvatarFallback className="bg-black/20">
+                            {author.name[0]}
+                          </AvatarFallback>
+                        </Avatar>
+                      </MessageAvatar>
+
+                      <MessageContent>
+                        <MessageHeader className="font-light opacity-90">
+                          {author.name}
+                        </MessageHeader>
+
+                        <Bubble>
+                          <BubbleContent
+                            className={cn(
+                              isCurrentUser ? "bg-black/10" : "bg-blue-200/20",
+                            )}
+                          >
+                            {message.content}
+                          </BubbleContent>
+                        </Bubble>
+                      </MessageContent>
+                    </Message>
+                  );
+                })}
               </div>
 
               <span className="flex gap-1 text-sm">

@@ -2,17 +2,16 @@
 
 import { Plus } from "lucide-react";
 import TaskItem from "./Task-item";
-import { mockTasks } from "../../db/mock-data";
+import { type Task } from "../../db/mock-data";
 import NewTask from "./New-task";
 
 interface ColumnProps {
   id: string;
   title: string;
   taskAction: (taskId: string) => void;
+  tasks: Task[];
 }
-export default function Column({ id, title, taskAction }: ColumnProps) {
-  const tasks = mockTasks;
-
+export default function Column({ id, title, taskAction, tasks }: ColumnProps) {
   const addNewTask = () => {
     console.log("New task added in collumn with ID:", id);
   };

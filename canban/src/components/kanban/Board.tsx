@@ -1,11 +1,16 @@
 /** @format */
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Collumn from "./Column";
 import EditTaskSheet from "./Edit-task-sheet";
 import { KanbanHeader } from "./Header";
+import { mockColumns, mockTasks } from "../../db/mock-data";
+import { map, groupBy } from "lodash";
 
 export default function KanbanBoard() {
+  const tasks = mockTasks;
+  const columns = mockColumns;
+
   const [sheetOpen, setIsSheetOpen] = useState<null | string>(null);
 
   const openTask = (taskId: string) => {
@@ -17,17 +22,32 @@ export default function KanbanBoard() {
     setIsSheetOpen(null);
   };
 
+  const board = useMemo(() => {
+    const tasksByCollumn = groupBy(tasks, (item) => item.columnId);
+
+    return columns
+      .filter((col) => col.visibility)
+      .sort((a, b) => a.order - b.order)
+      .map((col) => ({
+        ...col,
+        tasks: tasksByCollumn[col.id] ?? [],
+      }));
+  }, [columns, tasks]);
+
   return (
     <div className="flex flex-col  h-full gap-6 px-12 ">
       <KanbanHeader />
       <div className="flex gap-4 h-full overflow-x-auto">
-        <Collumn taskAction={openTask} id="todo" title="To Do"></Collumn>
-        <Collumn
-          taskAction={openTask}
-          id="in-progress"
-          title="In Progress"
-        ></Collumn>
-        <Collumn taskAction={openTask} id="done" title="Done"></Collumn>
+        {map(board, (col) => {
+          return (
+            <Collumn
+              taskAction={openTask}
+              id={col.id}
+              tasks={col.tasks}
+              title={col.name}
+            ></Collumn>
+          );
+        })}
       </div>
       <EditTaskSheet
         open={!!sheetOpen}

@@ -30,7 +30,7 @@ export default function TaskItem({
     <div
       onClick={() => action(id)}
       className={cn(
-        "flex gap-3 justify-between  items-stretch  py-3 pr-2 rounded-2xl",
+        "flex gap-3 justify-between  items-stretch  py-3 pr-2 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-200",
         isUrgent
           ? "bg-linear-to-br from-[#44010154] to-[#211E21]"
           : "bg-[#211E21]",
