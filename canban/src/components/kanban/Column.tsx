@@ -3,12 +3,14 @@
 import { Plus } from "lucide-react";
 import TaskItem from "./Task-item";
 import { mockTasks } from "../../db/mock-data";
+import NewTask from "./New-task";
 
 interface ColumnProps {
   id: string;
   title: string;
+  taskAction: (taskId: string) => void;
 }
-export default function Column({ id, title }: ColumnProps) {
+export default function Column({ id, title, taskAction }: ColumnProps) {
   const tasks = mockTasks;
 
   const addNewTask = () => {
@@ -32,6 +34,7 @@ export default function Column({ id, title }: ColumnProps) {
           .filter((task) => task.columnId === id)
           .map((task) => (
             <TaskItem
+              action={taskAction}
               key={task.id}
               assignee={task.assignee}
               commentsCount={
@@ -46,7 +49,9 @@ export default function Column({ id, title }: ColumnProps) {
           ))}
       </div>
       {/* footer  */}
-      <div className="flex justify-center items-center mt-4">
+      <div className="flex justify-center flex-col  items-center mt-4">
+        <NewTask />
+
         <button
           onClick={addNewTask}
           className="flex items-center justify-center gap-1 py-2  opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-pointer"

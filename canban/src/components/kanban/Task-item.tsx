@@ -10,10 +10,13 @@ interface TaskItemProps {
   assignee: string | null;
   dueDate: string | null;
   commentsCount: number | null;
+  action: (taskId: string) => void;
 }
 
 export default function TaskItem({
+  id,
   title,
+  action,
   description,
   priority,
   assignee,
@@ -25,6 +28,7 @@ export default function TaskItem({
 
   return (
     <div
+      onClick={() => action(id)}
       className={cn(
         "flex gap-3 justify-between  items-stretch  py-3 pr-2 rounded-2xl",
         isUrgent

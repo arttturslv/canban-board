@@ -15,7 +15,7 @@ export interface Task extends TaskItemProps {
   projectId: string;
   createdAt: string;
   updatedAt: string;
-  tags: string[];
+  tag: string;
 }
 
 export const mockTasks: Task[] = [
@@ -31,7 +31,7 @@ export const mockTasks: Task[] = [
     commentsCount: 3,
     createdAt: "2026-07-01T10:00:00Z",
     updatedAt: "2026-07-02T14:30:00Z",
-    tags: ["Frontend", "Auth"],
+    tag: "Frontend",
   },
   {
     id: "task-2",
@@ -46,7 +46,7 @@ export const mockTasks: Task[] = [
     commentsCount: 5,
     createdAt: "2026-07-05T08:15:00Z",
     updatedAt: "2026-07-07T19:00:00Z",
-    tags: ["Bug", "Performance"],
+    tag: "Bug",
   },
   {
     id: "task-3",
@@ -61,7 +61,7 @@ export const mockTasks: Task[] = [
     commentsCount: null,
     createdAt: "2026-07-07T11:00:00Z",
     updatedAt: "2026-07-07T11:00:00Z",
-    tags: ["Testes"],
+    tag: "Testes",
   },
   {
     id: "task-4",
@@ -76,10 +76,10 @@ export const mockTasks: Task[] = [
     commentsCount: 0,
     createdAt: "2026-06-28T09:00:00Z",
     updatedAt: "2026-07-04T16:20:00Z",
-    tags: ["DevOps"],
+    tag: "DevOps",
   },
   {
-    id: "task-4",
+    id: "task-5",
     columnId: "done",
     projectId: "project-1",
     title: "Configurar pipeline de CI/CD",
@@ -91,6 +91,6 @@ export const mockTasks: Task[] = [
     commentsCount: 0,
     createdAt: "2026-06-28T09:00:00Z",
     updatedAt: "2026-07-04T16:20:00Z",
-    tags: ["DevOps"],
+    tag: "DevOps",
   },
 ];
