@@ -1,22 +1,23 @@
 /** @format */
 
-export interface TaskItemProps {
-  id: string;
-  title: string;
-  description: string | null;
-  priority: "low" | "medium" | "high" | "urgent";
-  assignee: string | null;
-  dueDate: string | null;
-  commentsCount: number | null;
-}
+import type { Task } from "./dexie-db";
 
-export interface Task extends TaskItemProps {
-  columnId: string;
-  projectId: string;
-  createdAt: string;
-  updatedAt: string;
-  tag: string;
-}
+// export interface Task {
+//   id: string;
+//   columnId: string;
+//   projectId: string;
+
+//   title: string;
+//   description: string | null;
+//   priority: "low" | "medium" | "high" | "urgent";
+//   tag: string;
+//   assignee: string | null;
+//   dueDate: string | null;
+//   // commentsCount: number | null; ISSO VAI SER SÓ NO FRONTEND
+
+//   createdAt: string;
+//   updatedAt: string;
+// }
 
 export const mockTasks: Task[] = [
   {
@@ -128,6 +129,19 @@ export const mockColumns: Column[] = [
     visibility: false,
   },
 ];
+
+interface Message {
+  id: string;
+  projectId: string;
+  taskId: string;
+
+  authorId: string;
+  content: string;
+  attachments: string[];
+
+  readByIds: string[];
+  createdAt: string;
+}
 
 export const messages = [
   {
