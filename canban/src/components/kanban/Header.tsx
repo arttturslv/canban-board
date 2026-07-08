@@ -8,10 +8,10 @@ export const KanbanHeader = () => {
   };
 
   return (
-    <div className="flex flex-col justify-between items-center px-10 ">
+    <div className="flex flex-col justify-between items-center  ">
       <div className="flex justify-between items-center py-2 w-full">
         <span>
-          <h2 className="text-lg font-medium opacity-90">Kanban Board</h2>
+          <h2 className="text-lg font-medium opacity-90">Kanban board</h2>
         </span>
         <button
           onClick={openFilterSheet}

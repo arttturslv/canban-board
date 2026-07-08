@@ -1,32 +1,88 @@
 /** @format */
 import { Calendar, MessageCircle, User } from "lucide-react";
+import { cn } from "../../lib/utils";
 
-export default function TaskItem() {
+interface TaskItemProps {
+  id: string;
+  title: string;
+  description: string | null;
+  priority: "low" | "medium" | "high" | "urgent";
+  assignee: string | null;
+  dueDate: string | null;
+  commentsCount: number | null;
+}
+
+export default function TaskItem({
+  title,
+  description,
+  priority,
+  assignee,
+  dueDate,
+  commentsCount,
+}: TaskItemProps) {
+  let priorityColor = getPriorityColor(priority);
+  const isUrgent = priority === "urgent";
+
   return (
-    <div className="flex gap-4 justify-between  items-stretch bg-[#211E21] py-2.5 pr-2 rounded-2xl">
-      <div className="bg-red-300 flex grow w-2.5 ml-2 my-1.5 rounded-full"></div>
-      <div className="flex flex-col gap-1">
-        <span className="text-start">
-          <p className="font-medium tracking-wider">Generate A2 blog draft</p>
-          <p className="font-light opacity-90 leading-tight">
-            Full blog with AI images, AI text, Ai analysis and a lot more of AI
-            features.
+    <div
+      className={cn(
+        "flex gap-3 justify-between  items-stretch  py-3 pr-2 rounded-2xl",
+        isUrgent
+          ? "bg-linear-to-br from-[#44010154] to-[#211E21]"
+          : "bg-[#211E21]",
+      )}
+    >
+      <div
+        className={`flex grow w-2.5 ml-2 my-1.5 rounded-full ${priorityColor}`}
+      ></div>
+      <div className="flex flex-col gap-1.5">
+        <span className="text-start space-y-1">
+          <p
+            className={cn("font-medium leading-4", isUrgent && "text-red-500")}
+          >
+            {title}
           </p>
+          {description !== null && (
+            <p className="font-light opacity-90 leading-tight text-ellipsis line-clamp-2">
+              {description}
+            </p>
+          )}
         </span>
         <span className="font-light opacity-90 text-sm space-y-1">
-          <p className="flex gap-1 items-center ">
-            <User className="size-4" /> Artur Marcosa
-          </p>
-          <p className="flex gap-1 items-center">
-            <Calendar className="size-4" /> 07/07/2025
-          </p>
-          <span className="flex gap-2">
-            <p className="flex gap-1 items-center">
-              <MessageCircle className="size-4" /> 8
+          {assignee !== null && (
+            <p className="flex gap-1 items-center ">
+              <User className="size-4" /> {assignee}
             </p>
+          )}
+          {dueDate !== null && (
+            <p className="flex gap-1 items-center">
+              <Calendar className="size-4" /> {dueDate}
+            </p>
+          )}
+          <span className="flex gap-2">
+            {commentsCount !== null && (
+              <p className="flex gap-1 items-center">
+                <MessageCircle className="size-4" /> {commentsCount}
+              </p>
+            )}
           </span>
         </span>
       </div>
     </div>
   );
 }
+
+const getPriorityColor = (priority: string) => {
+  switch (priority) {
+    case "low":
+      return "bg-blue-300";
+    case "medium":
+      return "bg-yellow-300";
+    case "high":
+      return "bg-red-300";
+    case "urgent":
+      return "bg-red-600";
+    default:
+      return "bg-white-300";
+  }
+};

@@ -2,7 +2,7 @@
 
 import { Bell, EllipsisVertical, Share2 } from "lucide-react";
 
-import KanbanBoard from "./components/kanban/board";
+import KanbanBoard from "./components/kanban/Board";
 
 function App() {
   return (
@@ -31,7 +31,7 @@ export const PageHeader = () => {
   return (
     <div className="flex justify-between items-center px-10 py-6">
       <div>
-        <h1 className="text-xl font-bold text-white ">🫶 Project Title</h1>
+        <h1 className="text-xl font-bold text-white ">🫶 Life Goals</h1>
       </div>
       <div className="flex gap-4">
         <button
