@@ -61,7 +61,7 @@ export default function Column({ id, title, taskAction, tasks }: ColumnProps) {
         {!showNewTask && (
           <button
             onClick={addNewTask}
-            className="flex items-center justify-center gap-1 py-2  opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-pointer"
+            className="flex items-center justify-center gap-1 py-2 border-[2px] border-dashed w-full rounded-full  border-zinc-200/20  opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-pointer"
           >
             <Plus className="size-4" />
             <span>Adicionar tarefa</span>
