@@ -7,6 +7,8 @@ import {
   User,
   Text,
   SendHorizonal,
+  X,
+  Trash,
 } from "lucide-react";
 import { Sheet, SheetContent } from "../ui/sheet";
 import { useForm, type SubmitHandler } from "react-hook-form";
@@ -17,14 +19,33 @@ import {
   Message,
   MessageAvatar,
   MessageContent,
-  MessageGroup,
   MessageHeader,
 } from "../ui/message";
 import { Bubble, BubbleContent } from "../ui/bubble";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "@base-ui/react";
-import { messages, mockTasks, users } from "../../db/mock-data";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
+import { messages, users } from "../../db/mock-data";
+
 import { cn } from "../../lib/utils";
+import { useKanban } from "../../hooks/use-kanban";
+import type { JSXElementConstructor, ReactElement } from "react";
+import type {
+  ComponentRenderFn,
+  DialogTriggerState,
+  HTMLProps,
+} from "@base-ui/react";
+import { Button } from "../ui/button";
 
 interface EditTaskSheetProps {
   taskId: string | null;
@@ -46,34 +67,88 @@ export default function EditTaskSheet({
   open,
   taskId,
 }: EditTaskSheetProps) {
-  const taskFound = taskId
-    ? mockTasks.find((item) => item.id === taskId)
-    : null;
+  const { tasks, updateTask, deleteTask } = useKanban();
+
+  const taskFound = taskId ? tasks.find((item) => item.id === taskId) : null;
 
   const taskMessages = taskId
     ? messages.filter((m) => m.taskId === taskId)
     : [];
 
-  const { register, handleSubmit } = useForm<taskForm>({
+  const {
+    register,
+    handleSubmit,
+    formState: { disabled },
+  } = useForm<taskForm>({
     values: {
       title: taskFound?.title ?? "",
       assignee: taskFound?.assignee ?? "",
       dueDate: taskFound?.dueDate ?? "",
       priority: taskFound?.priority ?? "",
-      tag: taskFound?.tag ?? "",
+      tag: taskFound?.tags[0] ?? "",
       description: taskFound?.description ?? "",
     },
   });
 
-  const onSubmit: SubmitHandler<taskForm> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<taskForm> = (data) => {
+    if (!taskId) return;
+
+    const { mutate: updateTaskFn, error } = updateTask;
+
+    updateTaskFn({
+      id: taskId,
+      updates: {
+        ...data,
+        priority: "low",
+      },
+    });
+
+    if (error) {
+      console.error(error);
+    }
+    onClose();
+  };
+
+  const onDelete = () => {
+    if (!taskId) return;
+
+    const { mutate: deleteTaskFn, error } = deleteTask;
+
+    deleteTaskFn({ taskId });
+
+    if (error) {
+      console.error(error);
+    }
+    onClose();
+  };
 
   return (
     <Sheet onOpenChange={onClose} open={open}>
       <SheetContent
-        className={"w-200! bg-[#3E3D44] max-w-none! text-white pt-16 border-0!"}
+        showCloseButton={false}
+        className={
+          "w-200! h-full bg-[#3E3D44] max-w-none! text-white pt-16 border-0!"
+        }
       >
-        <form className="" onSubmit={handleSubmit(onSubmit)}>
-          <div className=" px-6 space-y-3 h-full grow flex flex-col">
+        <div className="absolute top-3 right-3 flex gap-2">
+          <button className="cursor-pointer hover:text-red-400 duration-200 transition-all">
+            <ConfirmationModal
+              title="Deletar Task"
+              action={onDelete}
+              description="As tarefas deletadas não podem ser recuperadas"
+            >
+              <Trash className="size-3.5 " />
+            </ConfirmationModal>
+          </button>
+          <button onClick={onClose} className="cursor-pointer">
+            <X className="size-4.5" />
+          </button>
+        </div>
+        <form
+          className="h-full flex flex-col justify-between"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className=" px-6 space-y-3  flex flex-col ">
             <span className="flex gap-2 items-center justify-center bg-[#2C2828] rounded-xl px-3">
               <Folder className="size-4" />
               <Input
@@ -204,13 +279,63 @@ export default function EditTaskSheet({
             </span>
           </div>
 
-          <div className=" h-full flex items-center">
-            <Button type="submit" className={"bg-green-700 w-full py-2"}>
-              Save
+          <div className=" flex items-center m-4">
+            <Button
+              disabled={disabled}
+              type="submit"
+              className={
+                "bg-[#2C2828] hover:bg-[#1b1919] cursor-pointer transition-all duration-200 rounded-lg w-full py-2"
+              }
+            >
+              Salvar
             </Button>
           </div>
         </form>
       </SheetContent>
     </Sheet>
+  );
+}
+
+interface ConfirmationModalProps {
+  title: string;
+  description: string;
+  action: () => void;
+  children:
+    | ReactElement<unknown, string | JSXElementConstructor<any>>
+    | ComponentRenderFn<HTMLProps, DialogTriggerState>
+    | undefined;
+}
+export function ConfirmationModal({
+  action,
+  description,
+  title,
+  children,
+}: ConfirmationModalProps) {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger className={"ring-0! border-0!"} render={children} />
+      <AlertDialogOverlay className="backdrop-blur-sm bg-black/50" />
+      <AlertDialogContent
+        className={"bg-[#2C2828] text-white border-0! ring-0!"}
+      >
+        <AlertDialogHeader>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel
+            className={"border-0! font-normal  cursor-pointer"}
+          >
+            Cancelar
+          </AlertDialogCancel>
+          <AlertDialogAction
+            className={" font-normal text-red-400 cursor-pointer"}
+            onClick={action}
+          >
+            Confirmar
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

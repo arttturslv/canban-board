@@ -34,10 +34,20 @@ export function useKanban() {
     },
   });
 
+  const deleteTaskMutation = useMutation({
+    mutationFn: ({ taskId }: { taskId: string }) =>
+      KanbanService.deleteTask(taskId),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+
   return {
     tasks: tasksQuery.data || [],
     isLoading: tasksQuery.isLoading,
-    updateTask: updateTaskMutation.mutate,
-    createTask: createTaskMutation.mutate,
+    updateTask: updateTaskMutation,
+    createTask: createTaskMutation.mutate, //todo - remover o mutate para ter estados e usar isSuccess...
+    deleteTask: deleteTaskMutation,
   };
 }
