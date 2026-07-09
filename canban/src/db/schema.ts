@@ -30,10 +30,24 @@ export type TaskResponse = Omit<
 
 export type TaskInput = Omit<
   Task,
-  "id" | "updatedAt" | "updatedBy" | "deletedBy" | "deletedAt"
+  | "id"
+  | "updatedAt"
+  | "createdAt"
+  | "updatedBy"
+  | "deletedBy"
+  | "deletedAt"
+  | "assignee"
+  | "description"
+  | "dueDate"
+  | "priority"
+  | "tags"
+  | "order"
 > &
   Partial<
-    Pick<Task, "assignee" | "description" | "dueDate" | "priority" | "tags">
+    Pick<
+      Task,
+      "assignee" | "description" | "dueDate" | "priority" | "tags" | "order"
+    >
   >;
 
 export interface Column {
@@ -79,3 +93,5 @@ export interface User {
   name: string;
   avatar: string | null;
 }
+
+export type taskPriority = "low" | "medium" | "high" | "urgent";
