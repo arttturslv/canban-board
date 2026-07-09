@@ -4,11 +4,12 @@ import { useMemo, useState } from "react";
 import Collumn from "./Column";
 import EditTaskSheet from "./Edit-task-sheet";
 import { KanbanHeader } from "./Header";
-import { mockColumns, mockTasks } from "../../db/mock-data";
+import { mockColumns } from "../../db/mock-data";
 import { map, groupBy } from "lodash";
+import { useKanban } from "../../hooks/use-kanban";
 
 export default function KanbanBoard() {
-  const tasks = mockTasks;
+  const { tasks } = useKanban();
   const columns = mockColumns;
 
   const [sheetOpen, setIsSheetOpen] = useState<null | string>(null);

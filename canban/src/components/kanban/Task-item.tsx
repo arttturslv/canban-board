@@ -37,34 +37,34 @@ export default function TaskItem({
       )}
     >
       <div
-        className={`flex grow w-2.5 ml-2 my-1.5 rounded-full ${priorityColor}`}
+        className={`flex shrink-0 max-w-1.5 w-full ml-2  rounded-full ${priorityColor}`}
       ></div>
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col w-full gap-1.5">
         <span className="text-start space-y-1">
           <p
             className={cn("font-medium leading-4", isUrgent && "text-red-500")}
           >
             {title}
           </p>
-          {description !== null && (
+          {description && (
             <p className="font-light opacity-90 leading-tight text-ellipsis line-clamp-2">
               {description}
             </p>
           )}
         </span>
         <span className="font-light opacity-90 text-sm space-y-1">
-          {assignee !== null && (
+          {assignee && (
             <p className="flex gap-1 items-center ">
               <User className="size-4" /> {assignee}
             </p>
           )}
-          {dueDate !== null && (
+          {dueDate && (
             <p className="flex gap-1 items-center">
               <Calendar className="size-4" /> {dueDate}
             </p>
           )}
           <span className="flex gap-2">
-            {commentsCount !== null && (
+            {commentsCount && (
               <p className="flex gap-1 items-center">
                 <MessageCircle className="size-4" /> {commentsCount}
               </p>
