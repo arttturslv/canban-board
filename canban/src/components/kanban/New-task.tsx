@@ -190,7 +190,7 @@ export function PrioritiesSelector({ control }: CustomFormComboboxControl) {
   );
 }
 
-export function TagsSelection({ control }: CustomFormComboboxControl) {
+function TagsSelection({ control }: CustomFormComboboxControl) {
   const tags = [
     "UI/UX",
     "Backend",

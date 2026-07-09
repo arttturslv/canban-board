@@ -11,8 +11,20 @@ import {
   Trash,
 } from "lucide-react";
 import { Sheet, SheetContent } from "../ui/sheet";
-import { useForm, type SubmitHandler } from "react-hook-form";
-
+import {
+  Controller,
+  useForm,
+  type Control,
+  type SubmitHandler,
+} from "react-hook-form";
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "../ui/combobox";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import {
@@ -46,6 +58,20 @@ import type {
   HTMLProps,
 } from "@base-ui/react";
 import { Button } from "../ui/button";
+import type { taskPriority } from "../../db/schema";
+
+const tags = [
+  "UI/UX",
+  "Backend",
+  "Frontend",
+  "IA",
+  "Database",
+  "RH",
+  "Client",
+  "Pesquisa",
+];
+
+const priorities: taskPriority[] = ["low", "medium", "high", "urgent"];
 
 interface EditTaskSheetProps {
   taskId: string | null;
@@ -78,6 +104,7 @@ export default function EditTaskSheet({
   const {
     register,
     handleSubmit,
+    control,
     formState: { disabled },
   } = useForm<taskForm>({
     values: {
@@ -99,7 +126,7 @@ export default function EditTaskSheet({
       id: taskId,
       updates: {
         ...data,
-        priority: "low",
+        priority: (data.priority || "low") as taskPriority,
       },
     });
 
@@ -164,12 +191,11 @@ export default function EditTaskSheet({
                 <span className="flex gap-1 items-center">
                   <BookMarked className="size-4" /> Categoria
                 </span>
-                <Input
-                  placeholder="Sem categoria"
-                  className=" bg-[#2C2828] border-none! rounded-xl ring-0! pr-8 "
-                  maxLength={42}
-                  {...register("tag")}
-                ></Input>
+                <ComboboxSelection
+                  array={tags}
+                  controlName="tag"
+                  control={control}
+                />
               </span>
 
               <span className="flex gap-2 flex-col">
@@ -188,12 +214,11 @@ export default function EditTaskSheet({
                 <span className="flex gap-1 items-center">
                   <ShieldAlert className="size-4" /> Prioridade
                 </span>
-                <Input
-                  placeholder="Sem prioridade"
-                  className=" bg-[#2C2828] border-none! rounded-xl ring-0! pr-8 "
-                  maxLength={42}
-                  {...register("priority")}
-                ></Input>
+                <ComboboxSelection
+                  array={priorities}
+                  controlName="priority"
+                  control={control}
+                />
               </span>
 
               <span className="flex gap-2 flex-col">
@@ -337,5 +362,52 @@ export function ConfirmationModal({
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+  );
+}
+
+interface ComboboxSelectionProps {
+  control: Control<taskForm>;
+  controlName: keyof taskForm;
+  array: string[];
+}
+function ComboboxSelection({
+  control,
+  controlName,
+  array,
+}: ComboboxSelectionProps) {
+  return (
+    <Controller
+      name={controlName}
+      control={control}
+      render={({ field }) => (
+        <Combobox
+          value={field.value}
+          onValueChange={(val) => field.onChange(val)}
+          items={array}
+        >
+          <div className="flex items-center ">
+            <ComboboxInput
+              className={"px-0! mx-0! ring-0! w-full rounded-xl bg-[#2C2828] "}
+              placeholder="Selecione"
+              ref={field.ref}
+            />
+            <ComboboxContent className={"px-0!  mx-0! bg-[#161416] ring-0! "}>
+              <ComboboxEmpty>No items found.</ComboboxEmpty>
+              <ComboboxList>
+                {(item) => (
+                  <ComboboxItem
+                    className={"text-white font-normal"}
+                    key={item}
+                    value={item}
+                  >
+                    {item}
+                  </ComboboxItem>
+                )}
+              </ComboboxList>
+            </ComboboxContent>
+          </div>
+        </Combobox>
+      )}
+    ></Controller>
   );
 }
