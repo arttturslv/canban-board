@@ -49,7 +49,10 @@ export type TaskInput = Omit<
       "assignee" | "description" | "dueDate" | "priority" | "tags" | "order"
     >
   >;
-
+export type updateTaskBatchInput = {
+  id: string;
+  updates: Partial<TaskInput>;
+}[];
 export interface Column {
   id: string;
   projectId: string;

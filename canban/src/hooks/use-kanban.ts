@@ -21,8 +21,56 @@ export function useKanban() {
       updates: Partial<TaskInput>;
     }) => KanbanService.updateTask(id, updates),
 
-    onSuccess: () => {
+    onMutate: async (newVariables) => {
+      await queryClient.cancelQueries({ queryKey: ["tasks"] });
+
+      const previousTasks = queryClient.getQueryData(["tasks"]);
+
+      queryClient.setQueryData(["tasks"], (oldTasks: any) => {
+        return oldTasks.map((task: any) =>
+          task.id === newVariables.id
+            ? { ...task, ...newVariables.updates }
+            : task,
+        );
+      });
+
+      return { previousTasks };
+    },
+
+    onError: (_err, _newVariables, context) => {
+      queryClient.setQueryData(["tasks"], context?.previousTasks);
+    },
+
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+
+  const updateTasksBatchMutation = useMutation({
+    mutationFn: (updatedTasks: { id: string; updates: Partial<TaskInput> }[]) =>
+      KanbanService.updateTaskBatch(updatedTasks),
+    onMutate: async (updatedTaskList) => {
+      await queryClient.cancelQueries({ queryKey: ["tasks"] });
+      const prevTasks = queryClient.getQueryData<any[]>(["tasks"]);
+
+      queryClient.setQueryData(["tasks"], (oldTasks: any[] | undefined) => {
+        if (!oldTasks) return [];
+
+        const updatesMap = new Map(
+          updatedTaskList.map((item) => [item.id, item.updates]),
+        );
+
+        return oldTasks.map((task) => {
+          if (updatesMap.has(task.id)) {
+            return { ...task, ...updatesMap.get(task.id) };
+          }
+          return task;
+        });
+      });
+      return { prevTasks };
+    },
+    onError: (_err, _variables, context) => {
+      queryClient.setQueryData(["tasks"], context?.prevTasks);
     },
   });
 
@@ -49,5 +97,6 @@ export function useKanban() {
     updateTask: updateTaskMutation,
     createTask: createTaskMutation.mutate, //todo - remover o mutate para ter estados e usar isSuccess...
     deleteTask: deleteTaskMutation,
+    updateTaskBatch: updateTasksBatchMutation,
   };
 }

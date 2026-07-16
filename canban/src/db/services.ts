@@ -9,6 +9,7 @@ import type {
   Task,
   TaskInput,
   TaskResponse,
+  updateTaskBatchInput,
 } from "./schema";
 
 export const KanbanService = {
@@ -42,7 +43,8 @@ export const KanbanService = {
       .equals([task.projectId, task.columnId])
       .toArray();
 
-    const nextOrder = tasksInColumn.length > 0 ? tasksInColumn.length + 1 : 1;
+    const lastTask = tasksInColumn.at(-1);
+    const nextOrder = (lastTask?.order ?? -1) + 100;
 
     const newTask: Task = {
       id: crypto.randomUUID(),
@@ -68,6 +70,18 @@ export const KanbanService = {
       updatedAt: new Date().toISOString(),
     };
     return await db.tasks.update(id, taskUpdated);
+  },
+
+  async updateTaskBatch(batch: updateTaskBatchInput) {
+    return await db.tasks.bulkUpdate(
+      batch.map(({ id, updates }) => ({
+        key: id,
+        changes: {
+          ...updates,
+          updatedAt: new Date().toISOString(),
+        },
+      })),
+    );
   },
 
   async deleteTask(id: string) {

@@ -16,7 +16,7 @@ export const KanbanHeader = () => {
 
   return (
     <div className="flex flex-col justify-between items-center  mt-4">
-      <div className="flex justify-between items-center py-2 w-full ">
+      <div className="flex justify-between items-center py-2 mb-2 w-full ">
         <div className="w-32"></div>
         <span className=" flex items-center justify-center gap-2 rounded-full bg-zinc-700 w-min px-4">
           <FileStack className="size-3" />

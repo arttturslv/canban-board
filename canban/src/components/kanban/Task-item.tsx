@@ -1,39 +1,61 @@
 /** @format */
 import { Calendar, MessageCircle, User } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { memo } from "react";
+import { useSortable } from "@dnd-kit/react/sortable";
 
 interface TaskItemProps {
   id: string;
+  index: number;
+  order: number;
   title: string;
   description: string | null;
   priority: "low" | "medium" | "high" | "urgent";
   assignee: string | null;
   dueDate: string | null;
   commentsCount: number | null;
+  columnId: string;
   action: (taskId: string) => void;
+  mock?: boolean;
 }
 
-export default function TaskItem({
+export const TaskItem = memo(function TaskItem({
   id,
   title,
+  index,
+  order,
   action,
   description,
   priority,
   assignee,
   dueDate,
   commentsCount,
+  columnId,
+  mock,
 }: TaskItemProps) {
   let priorityColor = getPriorityColor(priority);
   const isUrgent = priority === "urgent";
 
+  const { ref, isDragging } = mock
+    ? { ref: null }
+    : useSortable({
+        id: id,
+        index,
+        type: "task",
+        group: columnId,
+        accept: "task",
+      });
+
   return (
     <div
+      ref={mock ? null : ref}
       onClick={() => action(id)}
       className={cn(
-        "flex gap-3 justify-between  items-stretch  py-3 pr-2 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-200",
+        "flex gap-3 justify-between  items-stretch  py-3 pr-2 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-200 border-zinc-100/30",
         isUrgent
           ? "bg-linear-to-br from-[#44010154] to-[#211E21]"
           : "bg-[#211E21]",
+        isDragging && "opacity-0",
       )}
     >
       <div
@@ -44,11 +66,11 @@ export default function TaskItem({
           <p
             className={cn("font-medium leading-4", isUrgent && "text-red-500")}
           >
-            {title}
+            {title}-{order}
           </p>
-          {description && (
+          {id && (
             <p className="font-light opacity-90 leading-tight text-ellipsis line-clamp-2">
-              {description}
+              {description} {id}
             </p>
           )}
         </span>
@@ -74,7 +96,7 @@ export default function TaskItem({
       </div>
     </div>
   );
-}
+});
 
 const getPriorityColor = (priority: string) => {
   switch (priority) {
