@@ -3,13 +3,19 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { KanbanService } from "../db/services";
 import type { TaskInput } from "../db/schema";
+import { toast } from "sonner";
 
-export function useKanban() {
+export function useKanban(projectId: string) {
   const queryClient = useQueryClient();
 
   const tasksQuery = useQuery({
     queryKey: ["tasks"],
-    queryFn: KanbanService.getTasksWithProps,
+    queryFn: () => KanbanService.getTasksWithProps(projectId),
+  });
+
+  const columnsQuery = useQuery({
+    queryKey: ["columns"],
+    queryFn: () => KanbanService.getColumns(projectId),
   });
 
   const updateTaskMutation = useMutation({
@@ -20,8 +26,7 @@ export function useKanban() {
       id: string;
       updates: Partial<TaskInput>;
     }) => {
-      console.log({ updates });
-      return KanbanService.updateTask(id, updates);
+      return KanbanService.updateTask(id, { ...updates });
     },
 
     onMutate: async (newVariables) => {
@@ -78,11 +83,17 @@ export function useKanban() {
   });
 
   const createTaskMutation = useMutation({
-    mutationFn: ({ task }: { task: TaskInput }) => KanbanService.addTask(task),
+    mutationFn: ({ task }: { task: TaskInput }) => {
+      console.log("task: ", task);
+
+      return KanbanService.addTask(task);
+    },
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
+
+    onError: () => toast.warning("Algo deu errado ao criar uma task"),
   });
 
   const deleteTaskMutation = useMutation({
@@ -96,9 +107,10 @@ export function useKanban() {
 
   return {
     tasks: tasksQuery.data || [],
+    columns: columnsQuery.data || [],
     isLoading: tasksQuery.isLoading,
     updateTask: updateTaskMutation,
-    createTask: createTaskMutation.mutate, //todo - remover o mutate para ter estados e usar isSuccess...
+    createTask: createTaskMutation, //todo - remover o mutate para ter estados e usar isSuccess...
     deleteTask: deleteTaskMutation,
     updateTaskBatch: updateTasksBatchMutation,
   };

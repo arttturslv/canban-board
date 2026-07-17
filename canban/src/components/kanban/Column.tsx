@@ -14,14 +14,16 @@ interface ColumnProps {
   title: string;
   taskAction: (taskId: string) => void;
   tasks: TaskResponse[];
+  projectId: string;
 }
 export const Column = memo(function Column({
   id,
   title,
   taskAction,
   tasks,
+  projectId,
 }: ColumnProps) {
-  const { createTask } = useKanban();
+  const { createTask } = useKanban(projectId);
   const [showNewTask, setShowNewTask] = useState(false);
   const { ref, isDropTarget } = useDroppable({
     id,
@@ -67,10 +69,10 @@ export const Column = memo(function Column({
       <div className="flex justify-center flex-col  items-center mt-4 w-full">
         <NewTask
           columnId={id}
-          projectId="main"
+          projectId={projectId}
           isOpen={showNewTask}
           onClose={() => setShowNewTask(false)}
-          onSave={createTask}
+          onSave={createTask.mutate}
         />
 
         {!showNewTask && (

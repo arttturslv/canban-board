@@ -46,6 +46,7 @@ const tags = [
 const priorities: taskPriority[] = ["low", "medium", "high", "urgent"];
 
 interface EditTaskSheetProps {
+  projectId: string;
   taskId: string | null;
   open: boolean;
   onClose: () => void;
@@ -64,8 +65,9 @@ export default function EditTaskSheet({
   onClose,
   open,
   taskId,
+  projectId,
 }: EditTaskSheetProps) {
-  const { tasks, updateTask, deleteTask } = useKanban();
+  const { tasks, updateTask, deleteTask } = useKanban(projectId);
 
   const taskFound = taskId ? tasks.find((item) => item.id === taskId) : null;
 

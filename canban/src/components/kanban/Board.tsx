@@ -2,23 +2,22 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { Column } from "./Column";
 import EditTaskSheet from "./Edit-task-sheet";
 import { KanbanHeader } from "./Header";
-import { mockColumns } from "../../db/mock-data";
 import { map, groupBy } from "lodash";
 import { useKanban } from "../../hooks/use-kanban";
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
 import { move } from "@dnd-kit/helpers";
 import { isSortable } from "@dnd-kit/react/sortable";
 import { TaskItem } from "./Task-item";
-import type { TaskResponse } from "../../db/schema";
+import type { Column as ColumnType, TaskResponse } from "../../db/schema";
+import { Column } from "./Column";
 
-function buildGroupedTasks(tasks: TaskResponse[]) {
+function buildGroupedTasks(tasks: TaskResponse[], columns: ColumnType[]) {
   const tasksByColumn = groupBy(tasks, (task) => task.columnId);
 
   return Object.fromEntries(
-    mockColumns
+    columns
       .filter((col) => col.visibility)
       .map((col) => [
         col.id,
@@ -70,9 +69,8 @@ function applyBatchUpdates(
   );
 }
 
-export default function KanbanBoard() {
-  const { tasks, updateTaskBatch } = useKanban();
-  const columns = mockColumns;
+export default function KanbanBoard({ projectId }: { projectId: string }) {
+  const { tasks, columns, updateTaskBatch } = useKanban(projectId);
 
   const [localTasks, setLocalTasks] = useState<TaskResponse[]>(tasks);
   const isDragging = useRef(false);
@@ -162,7 +160,7 @@ export default function KanbanBoard() {
       return;
     }
 
-    const groupedTasks = buildGroupedTasks(localTasks);
+    const groupedTasks = buildGroupedTasks(localTasks, columns);
     const newGroupedState = move(groupedTasks, event) as Record<
       string,
       TaskResponse[]
@@ -193,11 +191,13 @@ export default function KanbanBoard() {
           {map(board, (col) => {
             return (
               <Column
+                projectId={projectId}
+
                 key={col.id}
                 taskAction={openTask}
                 id={col.id}
                 tasks={col.tasks}
-                title={col.name}
+                title={col.title}
               ></Column>
             );
           })}
@@ -211,7 +211,6 @@ export default function KanbanBoard() {
                   priority={activeTask.priority}
                   id={activeTask.id}
                   index={activeTask.order}
-                  order={activeTask.order}
                   description={activeTask.description}
                   assignee={activeTask.assignee}
                   dueDate={activeTask.dueDate}
@@ -226,6 +225,7 @@ export default function KanbanBoard() {
         </DragDropProvider>
       </div>
       <EditTaskSheet
+        projectId={projectId}
         open={!!sheetOpen}
         taskId={sheetOpen}
         onClose={closeEditTaskSheet}

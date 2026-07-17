@@ -94,7 +94,33 @@ export interface User {
   id: string;
   username: string;
   name: string;
-  avatar: string | null;
+  avatarUrl: string | null;
+  provider: "github" | "google";
+  createAt: string;
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  description?: string;
+  isPublic: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProjectMembers {
+  id: string;
+  projectId: string;
+  userId: string;
+  role: "owner" | "editor" | "viewer";
+  joinedAt: string;
+}
+
+export interface UserSettings {
+  userId: string;
+  theme: "dark" | "light";
+  language: "pt-BR" | "en-US";
+  notificationsEnabled: boolean;
 }
 
 export type taskPriority = "low" | "medium" | "high" | "urgent";
