@@ -40,14 +40,14 @@ export const Column = memo(function Column({
       ref={ref}
       className={cn(
         "max-w-100 w-full bg-[#3E3D44] p-4 rounded-3xl h-full transition-all duration-200",
-        isDropTarget && "bg-red-400",
+        isDropTarget && "bg-[#333236]",
       )}
     >
       <div className="flex justify-between items-center ">
         <h3 className="text-lg font-medium opacity-90">{title}</h3>
         <span className="opacity-60 text-sm">{taskCount}</span>
       </div>
-      <div className="flex flex-col gap-2 mt-2 min-h-8">
+      <div className="flex flex-col gap-2 mt-2 ">
         {tasks.map((task, index) => (
           <TaskItem
             index={index}

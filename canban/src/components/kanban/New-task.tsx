@@ -21,6 +21,7 @@ import {
 } from "react-hook-form";
 
 import { Button } from "../ui/button";
+import { useEffect, useRef } from "react";
 
 interface NewTaskProps {
   projectId: string;
@@ -54,6 +55,7 @@ export default function NewTask({
   const {
     register,
     handleSubmit,
+    watch,
     control,
     reset,
     formState: { errors },
@@ -65,6 +67,8 @@ export default function NewTask({
       priority: "low",
     },
   });
+  const newTaskRef = useRef<HTMLFormElement>(null);
+  const title = watch("title");
 
   const savingTask: SubmitHandler<newTaskForm> = (data) => {
     onSave({
@@ -80,10 +84,32 @@ export default function NewTask({
     onClose();
   };
 
+  useEffect(() => {
+    function handleOutsideClick(event: MouseEvent) {
+      if (
+        newTaskRef.current &&
+        !newTaskRef.current.contains(event.target as Node) &&
+        title.length === 0
+      ) {
+        onClose();
+      }
+    }
+
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [title]);
+
   if (!isOpen) return null;
 
   return (
-    <form className="w-full" onSubmit={handleSubmit(savingTask)}>
+    <form
+      ref={newTaskRef}
+      className="w-full"
+      onSubmit={handleSubmit(savingTask)}
+    >
       <div
         className={cn(
           "flex gap-3 justify-between items-stretch bg-[#211E21] py-3 pr-2 rounded-2xl",

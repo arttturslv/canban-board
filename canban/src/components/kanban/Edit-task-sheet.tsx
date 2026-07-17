@@ -130,15 +130,17 @@ export default function EditTaskSheet({
         }
       >
         <div className="absolute top-3 right-3 flex gap-2">
-          <button className="cursor-pointer hover:text-red-400 duration-200 transition-all">
+          <div className="cursor-pointer hover:text-red-400 duration-200 transition-all">
             <ConfirmationModal
               title="Deletar Task"
               action={onDelete}
               description="As tarefas deletadas não podem ser recuperadas"
             >
-              <Trash className="size-3.5 " />
+              <button className="mt-1.5">
+                <Trash className="size-3.5 " />
+              </button>
             </ConfirmationModal>
-          </button>
+          </div>
           <button onClick={onClose} className="cursor-pointer">
             <X className="size-4.5" />
           </button>
