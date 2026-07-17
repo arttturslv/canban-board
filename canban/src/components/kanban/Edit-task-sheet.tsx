@@ -49,7 +49,7 @@ import {
 } from "../ui/alert-dialog";
 import { messages, users } from "../../db/mock-data";
 
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 import { useKanban } from "../../hooks/use-kanban";
 import type { JSXElementConstructor, ReactElement } from "react";
 import type {

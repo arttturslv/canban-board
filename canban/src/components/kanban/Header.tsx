@@ -2,7 +2,7 @@
 
 import { FileStack, Settings2, Share2 } from "lucide-react";
 import { Input } from "../ui/input";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 
 export const KanbanHeader = () => {

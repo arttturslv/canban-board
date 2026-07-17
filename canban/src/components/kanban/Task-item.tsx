@@ -1,6 +1,6 @@
 /** @format */
 import { Calendar, MessageCircle, User } from "lucide-react";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 import { memo } from "react";
 import { useSortable } from "@dnd-kit/react/sortable";
 

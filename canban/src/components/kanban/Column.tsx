@@ -6,7 +6,7 @@ import NewTask from "./New-task";
 import type { TaskResponse } from "../../db/schema";
 import { memo, useState } from "react";
 import { useKanban } from "../../hooks/use-kanban";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 import { useDroppable } from "@dnd-kit/react";
 import { CollisionPriority } from "@dnd-kit/abstract";
 interface ColumnProps {

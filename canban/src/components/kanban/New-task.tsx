@@ -1,6 +1,6 @@
 /** @format */
 import { Bookmark, Folder, ShieldAlert, Text, Trash } from "lucide-react";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import {
