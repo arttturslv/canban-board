@@ -7,7 +7,6 @@ import { useSortable } from "@dnd-kit/react/sortable";
 interface TaskItemProps {
   id: string;
   index: number;
-  order: number;
   title: string;
   description: string | null;
   priority: "low" | "medium" | "high" | "urgent";
@@ -23,7 +22,6 @@ export const TaskItem = memo(function TaskItem({
   id,
   title,
   index,
-  order,
   action,
   description,
   priority,
@@ -66,11 +64,11 @@ export const TaskItem = memo(function TaskItem({
           <p
             className={cn("font-medium leading-4", isUrgent && "text-red-500")}
           >
-            {title}-{order}
+            {title}
           </p>
-          {id && (
+          {description && (
             <p className="font-light opacity-90 leading-tight text-ellipsis line-clamp-2">
-              {description} {id}
+              {description}
             </p>
           )}
         </span>
@@ -82,7 +80,8 @@ export const TaskItem = memo(function TaskItem({
           )}
           {dueDate && (
             <p className="flex gap-1 items-center">
-              <Calendar className="size-4" /> {dueDate}
+              <Calendar className="size-4" />{" "}
+              {new Date(dueDate).toLocaleDateString("pt-BR")}
             </p>
           )}
           <span className="flex gap-2">

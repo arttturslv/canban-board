@@ -19,7 +19,10 @@ export function useKanban() {
     }: {
       id: string;
       updates: Partial<TaskInput>;
-    }) => KanbanService.updateTask(id, updates),
+    }) => {
+      console.log({ updates });
+      return KanbanService.updateTask(id, updates);
+    },
 
     onMutate: async (newVariables) => {
       await queryClient.cancelQueries({ queryKey: ["tasks"] });

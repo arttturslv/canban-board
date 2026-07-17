@@ -53,7 +53,6 @@ export const Column = memo(function Column({
             index={index}
             columnId={id}
             action={taskAction}
-            order={task.order}
             key={task.id}
             assignee={task.assignee}
             commentsCount={task.commentsCount !== 0 ? task.commentsCount : null}

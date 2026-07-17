@@ -1,7 +1,7 @@
 /** @format */
 import {
   BookMarked,
-  Calendar,
+  Calendar as CalendarIcon,
   Folder,
   ShieldAlert,
   User,
@@ -11,20 +11,7 @@ import {
   Trash,
 } from "lucide-react";
 import { Sheet, SheetContent } from "../ui/sheet";
-import {
-  Controller,
-  useForm,
-  type Control,
-  type SubmitHandler,
-} from "react-hook-form";
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "../ui/combobox";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import {
@@ -35,30 +22,15 @@ import {
 } from "../ui/message";
 import { Bubble, BubbleContent } from "../ui/bubble";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog";
 import { messages, users } from "../../db/mock-data";
 
 import { cn } from "@/lib/utils";
 import { useKanban } from "../../hooks/use-kanban";
-import type { JSXElementConstructor, ReactElement } from "react";
-import type {
-  ComponentRenderFn,
-  DialogTriggerState,
-  HTMLProps,
-} from "@base-ui/react";
 import { Button } from "../ui/button";
 import type { taskPriority } from "../../db/schema";
+import { DatePicker } from "../date-picker";
+import ComboboxSelection from "../combobox-selection";
+import { ConfirmationModal } from "../confirmation-dialog";
 
 const tags = [
   "UI/UX",
@@ -79,7 +51,7 @@ interface EditTaskSheetProps {
   onClose: () => void;
 }
 
-interface taskForm {
+export interface taskForm {
   title: string;
   tag?: string;
   dueDate?: string;
@@ -199,15 +171,10 @@ export default function EditTaskSheet({
               </span>
 
               <span className="flex gap-2 flex-col">
-                <span className="flex gap-1 items-center">
-                  <Calendar className="size-4" /> Data
+                <span className="flex gap-1 items-center ">
+                  <CalendarIcon className="size-4" /> Data
                 </span>
-                <Input
-                  placeholder="Sem data"
-                  className=" bg-[#2C2828] border-none! rounded-xl ring-0! pr-8 "
-                  maxLength={42}
-                  {...register("dueDate")}
-                ></Input>
+                <DatePicker control={control} controlName={"dueDate"} />
               </span>
 
               <span className="flex gap-2 flex-col">
@@ -318,96 +285,5 @@ export default function EditTaskSheet({
         </form>
       </SheetContent>
     </Sheet>
-  );
-}
-
-interface ConfirmationModalProps {
-  title: string;
-  description: string;
-  action: () => void;
-  children:
-    | ReactElement<unknown, string | JSXElementConstructor<any>>
-    | ComponentRenderFn<HTMLProps, DialogTriggerState>
-    | undefined;
-}
-export function ConfirmationModal({
-  action,
-  description,
-  title,
-  children,
-}: ConfirmationModalProps) {
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger className={"ring-0! border-0!"} render={children} />
-      <AlertDialogOverlay className="backdrop-blur-sm bg-black/50" />
-      <AlertDialogContent
-        className={"bg-[#2C2828] text-white border-0! ring-0!"}
-      >
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel
-            className={"border-0! font-normal  cursor-pointer"}
-          >
-            Cancelar
-          </AlertDialogCancel>
-          <AlertDialogAction
-            className={" font-normal text-red-400 cursor-pointer"}
-            onClick={action}
-          >
-            Confirmar
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-}
-
-interface ComboboxSelectionProps {
-  control: Control<taskForm>;
-  controlName: keyof taskForm;
-  array: string[];
-}
-function ComboboxSelection({
-  control,
-  controlName,
-  array,
-}: ComboboxSelectionProps) {
-  return (
-    <Controller
-      name={controlName}
-      control={control}
-      render={({ field }) => (
-        <Combobox
-          value={field.value}
-          onValueChange={(val) => field.onChange(val)}
-          items={array}
-        >
-          <div className="flex items-center ">
-            <ComboboxInput
-              className={"px-0! mx-0! ring-0! w-full rounded-xl bg-[#2C2828] "}
-              placeholder="Selecione"
-              ref={field.ref}
-            />
-            <ComboboxContent className={"px-0!  mx-0! bg-[#161416] ring-0! "}>
-              <ComboboxEmpty>No items found.</ComboboxEmpty>
-              <ComboboxList>
-                {(item) => (
-                  <ComboboxItem
-                    className={"text-white font-normal"}
-                    key={item}
-                    value={item}
-                  >
-                    {item}
-                  </ComboboxItem>
-                )}
-              </ComboboxList>
-            </ComboboxContent>
-          </div>
-        </Combobox>
-      )}
-    ></Controller>
   );
 }
