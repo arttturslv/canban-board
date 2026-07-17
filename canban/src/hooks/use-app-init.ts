@@ -1,7 +1,7 @@
 /** @format */
 
 import { useQuery } from "@tanstack/react-query";
-import { AppInitializerService } from "@/db/services";
+import { AppInitializerService } from "@/db/services/app-init.service";
 
 export function useAppInit(supabaseUser: any) {
   const currentUserId = supabaseUser?.id || "local-user";

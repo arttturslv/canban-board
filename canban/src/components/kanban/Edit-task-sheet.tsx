@@ -14,36 +14,14 @@ import { Sheet, SheetContent } from "../ui/sheet";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import {
-  Message,
-  MessageAvatar,
-  MessageContent,
-  MessageHeader,
-} from "../ui/message";
-import { Bubble, BubbleContent } from "../ui/bubble";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { messages, users } from "../../db/mock-data";
 
-import { cn } from "@/lib/utils";
-import { useKanban } from "../../hooks/use-kanban";
+import { priorities, tags } from "@/lib/utils";
+import { useTaskMutations } from "../../hooks/use-task-mutation";
 import { Button } from "../ui/button";
-import type { taskPriority } from "../../db/schema";
 import { DatePicker } from "../date-picker";
 import ComboboxSelection from "../combobox-selection";
 import { ConfirmationModal } from "../confirmation-dialog";
-
-const tags = [
-  "UI/UX",
-  "Backend",
-  "Frontend",
-  "IA",
-  "Database",
-  "RH",
-  "Client",
-  "Pesquisa",
-];
-
-const priorities: taskPriority[] = ["low", "medium", "high", "urgent"];
+import type { priority, taskForm } from "@/db/schemas";
 
 interface EditTaskSheetProps {
   projectId: string;
@@ -52,28 +30,14 @@ interface EditTaskSheetProps {
   onClose: () => void;
 }
 
-export interface taskForm {
-  title: string;
-  tag?: string;
-  dueDate?: string;
-  priority?: string;
-  assignee?: string;
-  description?: string;
-}
-
 export default function EditTaskSheet({
   onClose,
   open,
   taskId,
   projectId,
 }: EditTaskSheetProps) {
-  const { tasks, updateTask, deleteTask } = useKanban(projectId);
-
-  const taskFound = taskId ? tasks.find((item) => item.id === taskId) : null;
-
-  const taskMessages = taskId
-    ? messages.filter((m) => m.taskId === taskId)
-    : [];
+  const { updateTask, deleteTask, useTask } = useTaskMutations(projectId);
+  const { data: taskFound } = useTask(taskId);
 
   const {
     register,
@@ -100,7 +64,7 @@ export default function EditTaskSheet({
       id: taskId,
       updates: {
         ...data,
-        priority: (data.priority || "low") as taskPriority,
+        priority: (data.priority || "low") as priority,
       },
     });
 
@@ -222,7 +186,7 @@ export default function EditTaskSheet({
               </span>
 
               <div className="flex flex-col  w-full gap-6 ">
-                {taskMessages.map((message) => {
+                {/* {taskMessages.map((message) => {
                   const author = users.find(
                     (user) => user.id === message.authorId,
                   )!;
@@ -259,7 +223,7 @@ export default function EditTaskSheet({
                       </MessageContent>
                     </Message>
                   );
-                })}
+                })} */}
               </div>
 
               <span className="flex gap-1 text-sm">

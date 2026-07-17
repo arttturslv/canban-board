@@ -1,5 +1,10 @@
 /** @format */
-import { Controller, type Control } from "react-hook-form";
+import {
+  Controller,
+  type Control,
+  type FieldValues,
+  type Path,
+} from "react-hook-form";
 import {
   Combobox,
   ComboboxContent,
@@ -8,18 +13,21 @@ import {
   ComboboxItem,
   ComboboxList,
 } from "@/components/ui/combobox";
-import type { taskForm } from "./kanban/Edit-task-sheet";
+import type React from "react";
+import { cn } from "@/lib/utils";
 
-interface ComboboxSelectionProps {
-  control: Control<taskForm>;
-  controlName: keyof taskForm;
+interface ComboboxSelectionProps<T extends FieldValues> {
+  control: Control<T>;
+  controlName: Path<T>;
   array: string[];
+  icon?: React.ReactNode;
 }
-export default function ComboboxSelection({
+export default function ComboboxSelection<T extends FieldValues>({
   control,
   controlName,
   array,
-}: ComboboxSelectionProps) {
+  icon,
+}: ComboboxSelectionProps<T>) {
   return (
     <Controller
       name={controlName}
@@ -31,11 +39,17 @@ export default function ComboboxSelection({
           items={array}
         >
           <div className="flex items-center ">
-            <ComboboxInput
-              className={"px-0! mx-0! ring-0! w-full rounded-xl bg-[#2C2828] "}
-              placeholder="Selecione"
-              ref={field.ref}
-            />
+            <div className={cn(!!icon && "flex items-center")}>
+              {icon}
+              <ComboboxInput
+                className={cn(
+                  "px-0! mx-0! ring-0! w-full rounded-xl bg-[#2C2828] ",
+                  icon && "bg-transparent",
+                )}
+                placeholder="Selecione"
+                ref={field.ref}
+              />
+            </div>
             <ComboboxContent className={"px-0!  mx-0! bg-[#161416] ring-0! "}>
               <ComboboxEmpty>No items found.</ComboboxEmpty>
               <ComboboxList>

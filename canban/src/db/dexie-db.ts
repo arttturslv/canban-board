@@ -9,7 +9,7 @@ import type {
   UserSettings,
   Project,
   ProjectMembers,
-} from "./schema";
+} from "./schemas";
 
 class KanbanDatabase extends Dexie {
   tasks!: Table<Task>;

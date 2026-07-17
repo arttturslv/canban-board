@@ -11,7 +11,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ptBR } from "date-fns/locale";
-import type { taskForm } from "./kanban/Edit-task-sheet";
+import type { taskForm } from "@/db/schemas";
 
 interface DatePickerProps {
   control: Control<taskForm, any, taskForm>;

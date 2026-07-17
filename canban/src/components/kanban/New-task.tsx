@@ -1,27 +1,15 @@
 /** @format */
 import { Bookmark, Folder, ShieldAlert, Text, Trash } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, priorities, tags } from "@/lib/utils";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "../ui/combobox";
 import type { UseMutateFunction } from "@tanstack/react-query";
-import type { TaskInput, taskPriority } from "../../db/schema";
-import {
-  Controller,
-  useForm,
-  type Control,
-  type SubmitHandler,
-} from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 
 import { Button } from "../ui/button";
 import { useEffect, useRef } from "react";
+import type { priority, TaskInput } from "@/db/schemas";
+import ComboboxSelection from "../combobox-selection";
 
 interface NewTaskProps {
   projectId: string;
@@ -41,7 +29,7 @@ interface NewTaskProps {
 interface newTaskForm {
   title: string;
   tags?: string;
-  priority?: taskPriority;
+  priority?: priority;
   description?: string;
 }
 
@@ -133,8 +121,18 @@ export default function NewTask({
               ></Input>
             </span>
 
-            <TagsSelection control={control} />
-            <PrioritiesSelector control={control} />
+            <ComboboxSelection
+              array={tags}
+              controlName="tags"
+              control={control}
+              icon={<Bookmark className="size-4" />}
+            />
+            <ComboboxSelection
+              array={priorities}
+              controlName="priority"
+              control={control}
+              icon={<ShieldAlert className="size-4" />}
+            />
             <span className="flex gap-2 items-start justify-center">
               <Text className="size-4 mt-3.5" />
               <Textarea
@@ -167,102 +165,5 @@ export default function NewTask({
         </Button>
       </div>
     </form>
-  );
-}
-
-interface CustomFormComboboxControl {
-  control: Control<newTaskForm>;
-}
-
-export function PrioritiesSelector({ control }: CustomFormComboboxControl) {
-  const priorities: taskPriority[] = ["low", "medium", "high", "urgent"];
-
-  return (
-    <Controller
-      name="priority"
-      control={control}
-      render={({ field }) => (
-        <Combobox
-          items={priorities}
-          value={field.value}
-          onValueChange={(val) => field.onChange(val)}
-        >
-          <div className="flex  items-center ">
-            <ShieldAlert className="size-4" />
-
-            <ComboboxInput
-              className={"px-0! mx-0! ring-0! w-full "}
-              placeholder="Select a framework"
-              ref={field.ref}
-            />
-            <ComboboxContent className={"px-0!  mx-0! bg-[#161416] ring-0! "}>
-              <ComboboxEmpty>No items found.</ComboboxEmpty>
-              <ComboboxList>
-                {(item) => (
-                  <ComboboxItem
-                    className={"text-white font-normal"}
-                    key={item}
-                    value={item}
-                  >
-                    {item}
-                  </ComboboxItem>
-                )}
-              </ComboboxList>
-            </ComboboxContent>
-          </div>
-        </Combobox>
-      )}
-    ></Controller>
-  );
-}
-
-function TagsSelection({ control }: CustomFormComboboxControl) {
-  const tags = [
-    "UI/UX",
-    "Backend",
-    "Frontend",
-    "IA",
-    "Database",
-    "RH",
-    "Client",
-    "Pesquisa",
-  ];
-
-  return (
-    <Controller
-      name="tags"
-      control={control}
-      render={({ field }) => (
-        <Combobox
-          value={field.value}
-          onValueChange={(val) => field.onChange(val)}
-          items={tags}
-        >
-          <div className="flex items-center ">
-            <Bookmark className="size-4" />
-
-            <ComboboxInput
-              className={"px-0! mx-0! ring-0! w-full "}
-              placeholder="Select a framework"
-              ref={field.ref}
-            />
-            <ComboboxContent className={"px-0!  mx-0! bg-[#161416] ring-0! "}>
-              <ComboboxEmpty>No items found.</ComboboxEmpty>
-              <ComboboxList>
-                {(item) => (
-                  <ComboboxItem
-                    className={"text-white font-normal"}
-                    key={item}
-                    value={item}
-                  >
-                    {item}
-                  </ComboboxItem>
-                )}
-              </ComboboxList>
-            </ComboboxContent>
-          </div>
-        </Combobox>
-      )}
-    ></Controller>
   );
 }

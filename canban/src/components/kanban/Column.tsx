@@ -3,12 +3,12 @@
 import { Plus } from "lucide-react";
 import { TaskItem } from "./Task-item";
 import NewTask from "./New-task";
-import type { TaskResponse } from "../../db/schema";
 import { memo, useState } from "react";
-import { useKanban } from "../../hooks/use-kanban";
+import { useTaskMutations } from "../../hooks/use-task-mutation";
 import { cn } from "@/lib/utils";
 import { useDroppable } from "@dnd-kit/react";
 import { CollisionPriority } from "@dnd-kit/abstract";
+import type { TaskResponse } from "@/db/schemas";
 interface ColumnProps {
   id: string;
   title: string;
@@ -23,7 +23,7 @@ export const Column = memo(function Column({
   tasks,
   projectId,
 }: ColumnProps) {
-  const { createTask } = useKanban(projectId);
+  const { createTask } = useTaskMutations(projectId);
   const [showNewTask, setShowNewTask] = useState(false);
   const { ref, isDropTarget } = useDroppable({
     id,

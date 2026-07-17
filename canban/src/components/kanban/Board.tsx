@@ -5,12 +5,12 @@ import { flushSync } from "react-dom";
 import EditTaskSheet from "./Edit-task-sheet";
 import { KanbanHeader } from "./Header";
 import { map, groupBy } from "lodash";
-import { useKanban } from "../../hooks/use-kanban";
+import { useKanban } from "../../hooks/use-board";
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
 import { move } from "@dnd-kit/helpers";
 import { isSortable } from "@dnd-kit/react/sortable";
 import { TaskItem } from "./Task-item";
-import type { Column as ColumnType, TaskResponse } from "../../db/schema";
+import type { Column as ColumnType, TaskResponse } from "@/db/schemas";
 import { Column } from "./Column";
 
 function buildGroupedTasks(tasks: TaskResponse[], columns: ColumnType[]) {
@@ -85,7 +85,6 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
   const [sheetOpen, setIsSheetOpen] = useState<null | string>(null);
 
   const openTask = (taskId: string) => {
-    console.log("Opening: ", taskId);
     setIsSheetOpen(taskId);
   };
 
@@ -204,7 +203,6 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
           <DragOverlay>
             {activeTask ? (
               <div className="transform rotate-2 scale-105 pointer-events-none">
-                {/* Aqui você renderiza a versão visual do seu TaskItem */}
                 <TaskItem
                   key={"mockTask"}
                   title={activeTask.title}
