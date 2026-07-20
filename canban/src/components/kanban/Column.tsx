@@ -3,12 +3,15 @@
 import { Plus } from "lucide-react";
 import { TaskItem } from "./Task-item";
 import NewTask from "./New-task";
-import { memo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useTaskMutations } from "../../hooks/use-task-mutation";
 import { cn } from "@/lib/utils";
 import { useDroppable } from "@dnd-kit/react";
 import { CollisionPriority } from "@dnd-kit/abstract";
 import type { TaskResponse } from "@/db/schemas";
+import { useColumnMutation } from "@/hooks/use-column-mutation";
+import { debounce } from "lodash";
+import { Input } from "@base-ui/react";
 interface ColumnProps {
   id: string;
   title: string;
@@ -37,6 +40,31 @@ export const Column = memo(function Column({
 
   const taskCount = tasks.length;
 
+  const { updateColumn } = useColumnMutation();
+
+  const [localTitle, setLocalTitle] = useState(title);
+
+  useEffect(() => {
+    if (title) {
+      setLocalTitle(title);
+    }
+  }, [title]);
+
+  const debouncedUpdate = useMemo(() => {
+    return debounce((newName: string, id: string) => {
+      updateColumn.mutate({ id, updates: { title: newName } });
+    }, 700);
+  }, [updateColumn]);
+
+  const onChangeInput = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setLocalTitle(value);
+      debouncedUpdate(value, id);
+    },
+    [id],
+  );
+
   return (
     <div
       ref={ref}
@@ -46,7 +74,16 @@ export const Column = memo(function Column({
       )}
     >
       <div className="flex justify-between items-center ">
-        <h3 className="text-lg font-medium opacity-90">{title}</h3>
+        <Input
+          onChange={onChangeInput}
+          placeholder="Nome da coluna"
+          value={localTitle}
+          className={cn(
+            "text-zinc-100 placeholder:text-zinc-100  text-lg font-bold ring-0! border-0!  p-0! rounded-md h-7",
+          )}
+          maxLength={42}
+          minLength={1}
+        ></Input>
         <span className="opacity-60 text-sm">{taskCount}</span>
       </div>
       <div className="flex flex-col gap-2 mt-2 ">

@@ -161,7 +161,7 @@ export default function EditTaskSheet({
                   <User className="size-4" /> Responsável
                 </span>
                 <Input
-                  placeholder="Sem categoria"
+                  placeholder="Sem responsável"
                   className=" bg-[#2C2828] border-none! rounded-xl ring-0! pr-8 "
                   maxLength={42}
                   {...register("assignee")}

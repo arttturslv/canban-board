@@ -35,7 +35,7 @@ export function DatePicker({ control, controlName }: DatePickerProps) {
                 {field.value ? (
                   format(new Date(field.value), "P", { locale: ptBR })
                 ) : (
-                  <span>Pick a date</span>
+                  <span>Escolha uma data</span>
                 )}
               </span>
               <ChevronDownIcon className="h-4 w-4 opacity-50" />

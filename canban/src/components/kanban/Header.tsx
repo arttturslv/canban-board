@@ -5,7 +5,7 @@ import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
 import { useProjectsMutation } from "@/hooks/use-project-mutation";
 import { debounce } from "lodash";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export const KanbanHeader = ({ projectId }: { projectId: string }) => {
   const { updateProject, useProject } = useProjectsMutation();
@@ -23,19 +23,20 @@ export const KanbanHeader = ({ projectId }: { projectId: string }) => {
     console.log("Filter sheet opened");
   };
 
-  const debouncedUpdate = useCallback(
-    debounce((newName: string) => {
-      console.log("Salvando no banco de dados:", newName);
+  const debouncedUpdate = useMemo(() => {
+    return debounce((newName: string, projectId: string) => {
       updateProject.mutate({ id: projectId, updates: { name: newName } });
-    }, 400),
-    [projectId, updateProject],
-  );
+    }, 700);
+  }, [updateProject]);
 
-  const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setLocalName(value);
-    debouncedUpdate(value);
-  };
+  const onChangeInput = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setLocalName(value);
+      debouncedUpdate(value, projectId);
+    },
+    [projectId],
+  );
 
   const minLength = 8;
   const currentLength =
