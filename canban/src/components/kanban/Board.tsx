@@ -180,7 +180,7 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
 
   return (
     <div className="flex flex-col  h-full gap-6 px-12 ">
-      <KanbanHeader />
+      <KanbanHeader projectId={projectId} />
       <div className="flex gap-4 h-full overflow-x-auto w-full mb-4">
         <DragDropProvider
           onDragStart={onDragStart}
