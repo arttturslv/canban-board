@@ -6,9 +6,10 @@ export interface Column {
   title: string;
   order: number;
   visibility: boolean;
+  createdAt: string;
   updatedAt: string;
 }
 
 export type ColumnInput = Omit<Column, "id" | "visibility">;
 
-export type ColumnUpdate = Omit<Column, "id" | "projectId">;
+export type ColumnUpdate = Omit<Column, "id" | "projectId" | "createdAt">;

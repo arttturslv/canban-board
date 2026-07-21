@@ -20,6 +20,7 @@ export const ColumnService = {
       visibility: true,
       ...column,
       order: collumnsLength + 1,
+      createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
 

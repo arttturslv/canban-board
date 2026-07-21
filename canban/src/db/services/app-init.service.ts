@@ -10,6 +10,7 @@ export const AppInitializerService = {
 
       const defaultProjectId = crypto.randomUUID();
       const memberId = crypto.randomUUID();
+      const currentDate = new Date().toISOString();
 
       await db
         .transaction(
@@ -28,8 +29,8 @@ export const AppInitializerService = {
               name: "Meu Primeiro Quadro",
               description: "Este é o seu Kanban inicial local!",
               isPublic: false,
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
+              createdAt: currentDate,
+              updatedAt: currentDate,
             });
 
             await db.projectMembers.add({
@@ -37,7 +38,7 @@ export const AppInitializerService = {
               projectId: defaultProjectId,
               userId: currentUserId,
               role: "owner",
-              joinedAt: new Date().toISOString(),
+              joinedAt: currentDate,
             });
 
             const defaultColumns = [
@@ -47,6 +48,8 @@ export const AppInitializerService = {
                 title: "🚀 Todo",
                 order: 1,
                 visibility: true,
+                createdAt: currentDate,
+                updatedAt: currentDate,
               },
               {
                 id: crypto.randomUUID(),
@@ -54,6 +57,8 @@ export const AppInitializerService = {
                 title: "⏳ Doing",
                 order: 2,
                 visibility: true,
+                createdAt: currentDate,
+                updatedAt: currentDate,
               },
               {
                 id: crypto.randomUUID(),
@@ -61,6 +66,8 @@ export const AppInitializerService = {
                 title: "✅ Done",
                 order: 3,
                 visibility: true,
+                createdAt: currentDate,
+                updatedAt: currentDate,
               },
             ];
 
