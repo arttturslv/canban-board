@@ -26,7 +26,7 @@ function RouteComponent() {
         aria-hidden
         className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 opacity-50 z-0"
         style={{
-          width: 900,
+          width: "100vw",
           height: 600,
           background:
             "radial-gradient(ellipse 60% 50% at 50% 0%, rgba(124,58,237,0.18) 0%, transparent 70%)",

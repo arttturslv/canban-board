@@ -180,7 +180,7 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
   };
 
   return (
-    <div className="flex flex-col  h-full gap-6 px-12">
+    <div className="flex flex-col  h-full gap-6 min:px-12 px-4">
       <KanbanHeader projectId={projectId} />
       <div className="flex gap-4 h-full overflow-x-auto w-full mb-4 custom-scroll">
         <DragDropProvider
@@ -226,7 +226,7 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
           onClick={() =>
             createColumn.mutate({ column: { projectId, title: "Nova coluna" } })
           }
-          className="flex items-center shrink-0 max-h-12 max-w-[25vw] justify-center gap-1 py-2 border-2 border-dashed w-full rounded-full  border-zinc-200/20  opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-pointer"
+          className="flex items-center shrink-0 max-h-12 sm:max-w-[25vw] justify-center gap-1 py-2 border-2 border-dashed w-full rounded-full  border-zinc-200/20  opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-pointer max-sm:w-64"
         >
           <Plus className="size-4" />
           <span>Adicionar coluna</span>

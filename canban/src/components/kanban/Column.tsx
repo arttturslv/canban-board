@@ -74,7 +74,7 @@ export const Column = memo(function Column({
     <div
       ref={ref}
       className={cn(
-        " w-[25vw]  bg-linear-to-t from-[#50396e42] to-[#36353b] p-4 rounded-3xl h-full transition-all duration-200 shrink-0",
+        " w-[25vw]  bg-linear-to-t from-[#50396e42] to-[#36353b] p-4 rounded-3xl h-full transition-all duration-200 shrink-0 max-sm:min-w-[80vw] md:min-w-[50vw] lg:min-w-0",
         isDropTarget && "bg-[#333236]",
       )}
     >

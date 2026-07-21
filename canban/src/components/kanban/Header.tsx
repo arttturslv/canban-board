@@ -44,8 +44,8 @@ export const KanbanHeader = ({ projectId }: { projectId: string }) => {
 
   return (
     <div className="flex flex-col justify-between items-center  mt-4">
-      <div className="flex justify-between items-center py-2 mb-2 w-full ">
-        <div className="w-32"></div>
+      <div className="flex justify-center items-center py-2 mb-2 w-full ">
+        <div className="w-32 hidden"></div>
         <span className=" flex items-center justify-center gap-2 rounded-full bg-zinc-700 w-min px-4">
           <FileStack className="size-3" />
           <Input
@@ -59,7 +59,7 @@ export const KanbanHeader = ({ projectId }: { projectId: string }) => {
             maxLength={42}
           ></Input>
         </span>
-        <div className="flex gap-2 w-0">
+        <div className=" gap-2 w-0 hidden">
           <button
             onClick={openFilterSheet}
             className="px-3 hidden py-0.5  text-sm border-px border-purple-500 text-purple-200 items-center justify-center gap-1 hover:opacity-80 transition-opacity bg-purple-500/30 rounded-full duration-200 cursor-pointer"
