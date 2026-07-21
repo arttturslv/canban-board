@@ -7,3 +7,34 @@
 @import "shadcn/tailwind.css";
 
 @import "@fontsource-variable/inter";
+
+/* Opção A: Padrão moderno (Firefox, Chrome, Edge) */
+.custom-scroll {
+  /* largura: auto | thin | none */
+  scrollbar-width: thin;
+  /* [cor do "trilho/fundo"] [cor do "indicador/thumb"] */
+  scrollbar-color: #362436 #1a101a;
+}
+
+/* Opção B: Controle fino via Webkit (para um acabamento perfeito no Chrome/Safari) */
+.custom-scroll::-webkit-scrollbar {
+  width: 8px; /* Largura para scroll vertical */
+  height: 8px; /* Altura para scroll horizontal */
+}
+
+/* Fundo da barra */
+.custom-scroll::-webkit-scrollbar-track {
+  background: #211e21;
+  border-radius: 4px;
+}
+
+/* O indicador que você arrasta */
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #211e21;
+  border-radius: 4px;
+}
+
+/* Efeito ao passar o mouse por cima do indicador */
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #211e21;
+}

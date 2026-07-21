@@ -40,7 +40,7 @@ export function ConfirmationModal({
       <AlertDialogOverlay className="backdrop-blur-sm bg-black/50" />
       <AlertDialogContent
         className={
-          "bg-[#2C2828] flex flex-col gap-3 pb-4 text-white border-0! ring-0!"
+          "bg-[#252323] flex flex-col gap-3 pb-4 text-white border-0! ring-0!"
         }
       >
         <AlertDialogHeader>

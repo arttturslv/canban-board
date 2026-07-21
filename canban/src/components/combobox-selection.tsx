@@ -39,7 +39,7 @@ export default function ComboboxSelection<T extends FieldValues>({
           items={array}
         >
           <div className="flex items-center ">
-            <div className={cn(!!icon && "flex items-center")}>
+            <div className={cn(!!icon && "flex items-center", "w-full")}>
               {icon}
               <ComboboxInput
                 className={cn(

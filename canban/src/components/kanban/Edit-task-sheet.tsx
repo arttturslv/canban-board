@@ -92,7 +92,7 @@ export default function EditTaskSheet({
       <SheetContent
         showCloseButton={false}
         className={
-          "w-200! h-full bg-[#3E3D44] max-w-none! text-white pt-16 border-0!"
+          "w-200! h-full  bg-linear-to-t from-[#261a35] to-[#36353b] max-w-none! text-white pt-16 border-0!"
         }
       >
         <div className="absolute top-3 right-3 flex gap-2">
@@ -116,7 +116,7 @@ export default function EditTaskSheet({
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className=" px-6 space-y-3  flex flex-col ">
-            <span className="flex gap-2 items-center justify-center bg-[#2C2828] rounded-xl px-3">
+            <span className="flex gap-2 items-center justify-center bg-[#252323] rounded-xl px-3">
               <Folder className="size-4" />
               <Input
                 placeholder="Digite o título..."
@@ -162,7 +162,7 @@ export default function EditTaskSheet({
                 </span>
                 <Input
                   placeholder="Sem responsável"
-                  className=" bg-[#2C2828] border-none! rounded-xl ring-0! pr-8 "
+                  className=" bg-[#252323] border-none! rounded-xl ring-0! pr-8 "
                   maxLength={42}
                   {...register("assignee")}
                 ></Input>
@@ -175,7 +175,7 @@ export default function EditTaskSheet({
               </span>
               <Textarea
                 placeholder="Adicione a descrição..."
-                className="font-light placeholder:opacity-80  border-none! ring-0! pr-6 bg-[#2C2828] "
+                className="font-light placeholder:opacity-80  border-none! ring-0! pr-6 bg-[#252323] "
                 {...register("description")}
               ></Textarea>
             </span>
@@ -244,7 +244,7 @@ export default function EditTaskSheet({
               disabled={disabled}
               type="submit"
               className={
-                "bg-[#2C2828] hover:bg-[#1b1919] cursor-pointer transition-all duration-200 rounded-lg w-full py-2"
+                "bg-[#252323] hover:bg-[#1b1919] cursor-pointer transition-all duration-200 rounded-lg w-full py-2"
               }
             >
               Salvar

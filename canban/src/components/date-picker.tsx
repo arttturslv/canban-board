@@ -28,7 +28,7 @@ export function DatePicker({ control, controlName }: DatePickerProps) {
           <Popover>
             <PopoverTrigger
               type="button"
-              className=" inline-flex h-9  max-w-42 w-72 shrink-0 items-center  justify-between rounded-xl bg-[#2C2828] px-3 py-2 text-sm "
+              className=" inline-flex h-9  max-w-42 w-72 shrink-0 items-center  justify-between rounded-xl bg-[#252323] px-3 py-2 text-sm "
               data-empty={!field.value}
             >
               <span className="w-full text-start">
@@ -46,7 +46,7 @@ export function DatePicker({ control, controlName }: DatePickerProps) {
                 locale={ptBR}
                 lang="ptBR"
                 mode="single"
-                className="bg-[#2C2828]! rounded-3xl text-zinc-200"
+                className="bg-[#252323]! rounded-3xl text-zinc-200"
                 selected={field.value ? new Date(field.value) : undefined}
                 onSelect={(date) => field.onChange(date?.toISOString())}
                 defaultMonth={field.value ? new Date(field.value) : undefined}

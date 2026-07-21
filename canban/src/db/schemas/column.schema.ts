@@ -10,6 +10,9 @@ export interface Column {
   updatedAt: string;
 }
 
-export type ColumnInput = Omit<Column, "id" | "visibility">;
+export type ColumnInput = Omit<
+  Column,
+  "id" | "visibility" | "order" | "createdAt" | "updatedAt"
+>;
 
 export type ColumnUpdate = Omit<Column, "id" | "projectId" | "createdAt">;

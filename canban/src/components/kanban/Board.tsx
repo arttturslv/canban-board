@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import EditTaskSheet from "./Edit-task-sheet";
 import { KanbanHeader } from "./Header";
-import { map, groupBy } from "lodash";
+import { map, groupBy, filter } from "lodash";
 import { useKanban } from "../../hooks/use-board";
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
 import { move } from "@dnd-kit/helpers";
@@ -12,6 +12,8 @@ import { isSortable } from "@dnd-kit/react/sortable";
 import { TaskItem } from "./Task-item";
 import type { Column as ColumnType, TaskResponse } from "@/db/schemas";
 import { Column } from "./Column";
+import { Plus } from "lucide-react";
+import { useColumnMutation } from "@/hooks/use-column-mutation";
 
 function buildGroupedTasks(tasks: TaskResponse[], columns: ColumnType[]) {
   const tasksByColumn = groupBy(tasks, (task) => task.columnId);
@@ -71,7 +73,7 @@ function applyBatchUpdates(
 
 export default function KanbanBoard({ projectId }: { projectId: string }) {
   const { tasks, columns, updateTaskBatch } = useKanban(projectId);
-
+  const { createColumn } = useColumnMutation();
   const [localTasks, setLocalTasks] = useState<TaskResponse[]>(tasks);
   const isDragging = useRef(false);
   const sourceParentRef = useRef<HTMLElement | null>(null);
@@ -95,8 +97,7 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
   const board = useMemo(() => {
     const tasksByCollumn = groupBy(localTasks, (item) => item.columnId);
 
-    return columns
-      .filter((col) => col.visibility)
+    return filter(columns, (col) => col.visibility)
       .sort((a, b) => a.order - b.order)
       .map((col) => ({
         ...col,
@@ -179,9 +180,9 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
   };
 
   return (
-    <div className="flex flex-col  h-full gap-6 px-12 ">
+    <div className="flex flex-col  h-full gap-6 px-12">
       <KanbanHeader projectId={projectId} />
-      <div className="flex gap-4 h-full overflow-x-auto w-full mb-4">
+      <div className="flex gap-4 h-full overflow-x-auto w-full mb-4 custom-scroll">
         <DragDropProvider
           onDragStart={onDragStart}
           onDragOver={onDragOver}
@@ -209,18 +210,27 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
                   priority={activeTask.priority}
                   id={activeTask.id}
                   index={activeTask.order}
-                  description={activeTask.description}
+                  description={""}
                   assignee={activeTask.assignee}
                   dueDate={activeTask.dueDate}
                   commentsCount={activeTask.commentsCount}
                   columnId={activeTask.columnId}
-                  action={() => console.log("aa")}
+                  action={() => console.log("")}
                   mock={true}
                 />
               </div>
             ) : null}
           </DragOverlay>
         </DragDropProvider>
+        <button
+          onClick={() =>
+            createColumn.mutate({ column: { projectId, title: "Nova coluna" } })
+          }
+          className="flex items-center shrink-0 max-h-12 max-w-[25vw] justify-center gap-1 py-2 border-2 border-dashed w-full rounded-full  border-zinc-200/20  opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-pointer"
+        >
+          <Plus className="size-4" />
+          <span>Adicionar coluna</span>
+        </button>
       </div>
       <EditTaskSheet
         projectId={projectId}

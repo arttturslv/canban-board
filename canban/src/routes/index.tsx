@@ -24,9 +24,7 @@ function RouteComponent() {
     >
       <Nav boardRedirect={goToBoard} />
 
-      {/* ── Hero ── */}
       <section className="relative overflow-hidden pb-24 pt-36">
-        {/* Ambient glow */}
         <div
           aria-hidden
           className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2"
@@ -39,13 +37,11 @@ function RouteComponent() {
         />
 
         <div className="relative mx-auto max-w-5xl px-6 text-center">
-          {/* Eyebrow */}
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-3.5 py-1.5 text-xs font-medium text-violet-400">
             <span className="h-1.5 w-1.5 rounded-full bg-violet-400" />
             Gratuito para usar
           </div>
 
-          {/* Headline */}
           <h1
             className="mx-auto mb-6 max-w-3xl text-5xl font-extrabold leading-[1.08] tracking-tight text-foreground md:text-6xl lg:text-7xl"
             style={{ fontFamily: "'Bricolage Grotesque', sans-serif" }}
@@ -64,14 +60,12 @@ function RouteComponent() {
             Zero atrito.{" "}
           </h1>
 
-          {/* Sub-headline */}
           <p className="mx-auto mb-10 max-w-xl text-lg leading-relaxed text-muted-foreground">
             Vá além das listas de tarefas tradicionais. Organize projetos em
             colunas, defina prioridades instantaneamente e acompanhe o progresso
             do início ao fim.
           </p>
 
-          {/* CTA */}
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <button
               onClick={goToBoard}
@@ -93,16 +87,13 @@ function RouteComponent() {
           </div>
         </div>
 
-        {/* Kanban mockup */}
         <div className="mx-auto mt-16 max-w-5xl px-6">
           <KanbanMockup />
         </div>
       </section>
 
-      {/* ── Features ── */}
       <section id="features" className="py-28">
         <div className="mx-auto max-w-5xl px-6">
-          {/* Section header */}
           <div className="mb-14 text-center">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-violet-400">
               Por que Canban
@@ -115,7 +106,6 @@ function RouteComponent() {
             </h2>
           </div>
 
-          {/* Cards */}
           <div className="grid gap-5 md:grid-cols-3">
             {FEATURES.map((f, i) => (
               <div
@@ -148,7 +138,6 @@ function RouteComponent() {
         </div>
       </section>
 
-      {/* ── Social proof strip ── */}
       <section className="border-y border-white/6 bg-white/2 py-14">
         <div className="mx-auto max-w-4xl px-6">
           <div className="grid grid-cols-2 gap-8 text-center md:grid-cols-4">
@@ -172,9 +161,7 @@ function RouteComponent() {
         </div>
       </section>
 
-      {/* ── Final CTA ── */}
       <section className="relative overflow-hidden py-36">
-        {/* Glow */}
         <div
           aria-hidden
           className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -213,9 +200,6 @@ function RouteComponent() {
                 className="transition-transform group-hover:translate-x-0.5"
               />
             </button>
-            {/* <button className="rounded-xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-base font-medium text-muted-foreground transition-all hover:border-white/[0.18] hover:text-foreground">
-              Sign in
-            </button> */}
           </div>
 
           <p className="mt-6 text-xs text-muted-foreground/50">
@@ -224,7 +208,6 @@ function RouteComponent() {
         </div>
       </section>
 
-      {/* ── Footer ── */}
       <footer className="border-t border-white/6 py-10">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 text-sm text-muted-foreground md:flex-row">
           <div className="flex items-center gap-2">
@@ -311,12 +294,6 @@ function Nav({ boardRedirect }: NavProps) {
         </div>
 
         <div className="flex items-center gap-3">
-          {/* <a
-            href="#"
-            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Sign in
-          </a> */}
           <button
             onClick={boardRedirect}
             className="rounded-lg bg-violet-600 px-4 py-1.5 text-sm font-medium text-white transition-all hover:bg-violet-500 active:scale-95"

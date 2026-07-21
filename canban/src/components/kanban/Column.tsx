@@ -1,6 +1,6 @@
 /** @format */
 
-import { Plus } from "lucide-react";
+import { Plus, Trash } from "lucide-react";
 import { TaskItem } from "./Task-item";
 import NewTask from "./New-task";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
@@ -65,26 +65,40 @@ export const Column = memo(function Column({
     [id],
   );
 
+  const softDeleteColumn = () => {
+    if (taskCount !== 0) return;
+    updateColumn.mutate({ id, updates: { visibility: false } });
+  };
+
   return (
     <div
       ref={ref}
       className={cn(
-        "max-w-100 w-full bg-[#3E3D44] p-4 rounded-3xl h-full transition-all duration-200",
+        " w-[25vw]  bg-linear-to-t from-[#50396e42] to-[#36353b] p-4 rounded-3xl h-full transition-all duration-200 shrink-0",
         isDropTarget && "bg-[#333236]",
       )}
     >
-      <div className="flex justify-between items-center ">
+      <div className="flex justify-between items-center space-x-1">
         <Input
           onChange={onChangeInput}
           placeholder="Nome da coluna"
           value={localTitle}
           className={cn(
-            "text-zinc-100 placeholder:text-zinc-100  text-lg font-bold ring-0! border-0!  p-0! rounded-md h-7",
+            "text-zinc-100 placeholder:text-zinc-100 placeholder:font-md  w-full text-lg font-bold ring-0! border-0! outline-0!  p-0! rounded-md h-7",
           )}
           maxLength={42}
           minLength={1}
         ></Input>
         <span className="opacity-60 text-sm">{taskCount}</span>
+        <button
+          onClick={softDeleteColumn}
+          className={cn(
+            "cursor-pointer hover:text-red-400 duration-200 transition-all",
+            taskCount != 0 && "opacity-0 size-0!",
+          )}
+        >
+          <Trash className="size-4 " />
+        </button>
       </div>
       <div className="flex flex-col gap-2 mt-2 ">
         {tasks.map((task, index) => (

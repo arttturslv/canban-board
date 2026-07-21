@@ -59,10 +59,10 @@ export const KanbanHeader = ({ projectId }: { projectId: string }) => {
             maxLength={42}
           ></Input>
         </span>
-        <div className="flex gap-2 w-32">
+        <div className="flex gap-2 w-0">
           <button
             onClick={openFilterSheet}
-            className="px-3 py-0.5 flex text-sm border-px border-purple-500 text-purple-200 items-center justify-center gap-1 hover:opacity-80 transition-opacity bg-purple-500/30 rounded-full duration-200 cursor-pointer"
+            className="px-3 hidden py-0.5  text-sm border-px border-purple-500 text-purple-200 items-center justify-center gap-1 hover:opacity-80 transition-opacity bg-purple-500/30 rounded-full duration-200 cursor-pointer"
           >
             Share
             <Share2 className="size-3" />
@@ -70,7 +70,7 @@ export const KanbanHeader = ({ projectId }: { projectId: string }) => {
 
           <button
             onClick={openFilterSheet}
-            className="px-3 py-0.5 flex text-sm border-px border-gray-500 text-gray-200 items-center justify-center gap-1 hover:opacity-80 transition-opacity bg-gray-500/30 rounded-full duration-200 cursor-pointer"
+            className="px-3 py-0.5 hidden  text-sm border-px border-gray-500 text-gray-200 items-center justify-center gap-1 hover:opacity-80 transition-opacity bg-gray-500/30 rounded-full duration-200 cursor-pointer"
           >
             <Settings2 className="size-3" />
           </button>

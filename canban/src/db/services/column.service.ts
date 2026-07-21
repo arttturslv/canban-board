@@ -12,7 +12,7 @@ export const ColumnService = {
     return db.columns.filter((col) => col.projectId === projectId).toArray();
   },
 
-  async createColumns(column: ColumnInput) {
+  async createColumn(column: ColumnInput) {
     const collumnsLength = (await db.columns.toArray()).length;
 
     const newCollumn: Column = {

@@ -32,6 +32,17 @@ class KanbanDatabase extends Dexie {
       userSettings: "userId",
       project: "id",
     });
+
+    this.on("versionchange", () => {
+      db.close();
+      window.location.reload();
+    });
+
+    this.on("blocked", () => {
+      alert(
+        "Por favor, feche outras abas deste aplicativo para que os dados sejam atualizados em segurança.",
+      );
+    });
   }
 }
 

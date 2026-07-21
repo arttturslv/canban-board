@@ -85,7 +85,7 @@ export const TaskItem = memo(function TaskItem({
             </p>
           )}
           <span className="flex gap-2">
-            {commentsCount && (
+            {!!commentsCount && (
               <p className="flex gap-1 items-center">
                 <MessageCircle className="size-4" /> {commentsCount}
               </p>
