@@ -1,14 +1,12 @@
 /** @format */
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { flushSync } from "react-dom";
 import EditTaskSheet from "./Edit-task-sheet";
 import { KanbanHeader } from "./Header";
 import { map, groupBy, filter } from "lodash";
 import { useKanban } from "../../hooks/use-board";
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
 import { move } from "@dnd-kit/helpers";
-import { isSortable } from "@dnd-kit/react/sortable";
 import { TaskItem } from "./Task-item";
 import type { Column as ColumnType, TaskResponse } from "@/db/schemas";
 import { Column } from "./Column";
@@ -28,55 +26,11 @@ function buildGroupedTasks(tasks: TaskResponse[], columns: ColumnType[]) {
   );
 }
 
-function buildBatchUpdates(
-  groupedState: Record<string, TaskResponse[]>,
-  affectedColumns: Set<string>,
-) {
-  const batchUpdates: {
-    id: string;
-    updates: { order: number; columnId: string };
-  }[] = [];
-
-  for (const columnId of affectedColumns) {
-    const columnTasks = groupedState[columnId] ?? [];
-
-    columnTasks.forEach((task, index) => {
-      const newOrder = index * 100;
-
-      if (task.columnId !== columnId || task.order !== newOrder) {
-        batchUpdates.push({
-          id: task.id,
-          updates: {
-            columnId,
-            order: newOrder,
-          },
-        });
-      }
-    });
-  }
-
-  return batchUpdates;
-}
-
-function applyBatchUpdates(
-  tasks: TaskResponse[],
-  batchUpdates: { id: string; updates: { order: number; columnId: string } }[],
-) {
-  const updatesMap = new Map(
-    batchUpdates.map((item) => [item.id, item.updates]),
-  );
-
-  return tasks.map((task) =>
-    updatesMap.has(task.id) ? { ...task, ...updatesMap.get(task.id) } : task,
-  );
-}
-
 export default function KanbanBoard({ projectId }: { projectId: string }) {
   const { tasks, columns, updateTaskBatch } = useKanban(projectId);
   const { createColumn } = useColumnMutation();
   const [localTasks, setLocalTasks] = useState<TaskResponse[]>(tasks);
   const isDragging = useRef(false);
-  const sourceParentRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!isDragging.current) {
@@ -111,72 +65,71 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
 
   const onDragStart = (event: any) => {
     isDragging.current = true;
-    sourceParentRef.current =
-      event.operation.source?.element?.parentElement ?? null;
     setActiveId(event.operation.source.id);
   };
 
   const onDragOver = (event: any) => {
-    event.preventDefault();
-  };
-
-  const onDragEnd = (event: any) => {
-    isDragging.current = false;
-    setActiveId(null);
-
-    const sourceElement = event.operation.source?.element as
-      HTMLElement | undefined;
-    const previousParent = sourceParentRef.current;
-    sourceParentRef.current = null;
-
-    if (
-      sourceElement &&
-      previousParent &&
-      sourceElement.parentElement !== previousParent
-    ) {
-      previousParent.appendChild(sourceElement);
-    }
-
-    if (event.canceled) {
-      setLocalTasks(tasks);
-      return;
-    }
-
     const { source, target } = event.operation;
-
-    if (!target) return;
-
-    if (!isSortable(source)) return;
-
-    const oldIndex = source.sortable.initialIndex;
-    const newIndex = source.sortable.index;
-    const sourceColumnId = (source.sortable.initialGroup ??
-      source.group) as string;
-    const targetColumnId = isSortable(target)
-      ? ((target.sortable.group ?? target.group) as string)
-      : (target.id as string);
-
-    if (oldIndex === newIndex && sourceColumnId === targetColumnId) {
-      return;
-    }
+    if (!source || !target) return;
 
     const groupedTasks = buildGroupedTasks(localTasks, columns);
     const newGroupedState = move(groupedTasks, event) as Record<
       string,
       TaskResponse[]
     >;
-    const affectedColumns = new Set([sourceColumnId, targetColumnId]);
-    const batchUpdates = buildBatchUpdates(newGroupedState, affectedColumns);
 
-    if (batchUpdates.length === 0) return;
+    if (!newGroupedState) return;
 
-    flushSync(() => {
-      setLocalTasks((currentTasks) =>
-        applyBatchUpdates(currentTasks, batchUpdates),
-      );
+    const updatedTasks: TaskResponse[] = [];
+    for (const colId of Object.keys(newGroupedState)) {
+      const colTasks = newGroupedState[colId] ?? [];
+      colTasks.forEach((task, idx) => {
+        updatedTasks.push({
+          ...task,
+          columnId: colId,
+          order: idx * 100,
+        });
+      });
+    }
+
+    setLocalTasks(updatedTasks);
+  };
+
+  const onDragEnd = (event: any) => {
+    isDragging.current = false;
+    setActiveId(null);
+
+    if (event.canceled) {
+      setLocalTasks(tasks);
+      return;
+    }
+
+    const dbTaskMap = new Map(tasks.map((t) => [t.id, t]));
+    const batchUpdates: {
+      id: string;
+      updates: { order: number; columnId: string };
+    }[] = [];
+
+    localTasks.forEach((localTask) => {
+      const dbTask = dbTaskMap.get(localTask.id);
+      if (
+        !dbTask ||
+        dbTask.columnId !== localTask.columnId ||
+        dbTask.order !== localTask.order
+      ) {
+        batchUpdates.push({
+          id: localTask.id,
+          updates: {
+            columnId: localTask.columnId,
+            order: localTask.order,
+          },
+        });
+      }
     });
 
-    updateTaskBatch.mutate(batchUpdates);
+    if (batchUpdates.length > 0) {
+      updateTaskBatch.mutate(batchUpdates);
+    }
   };
 
   return (
@@ -210,7 +163,7 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
                   priority={activeTask.priority}
                   id={activeTask.id}
                   index={activeTask.order}
-                  description={""}
+                  description={activeTask.description}
                   assignee={activeTask.assignee}
                   dueDate={activeTask.dueDate}
                   commentsCount={activeTask.commentsCount}

@@ -49,6 +49,9 @@ export function useKanban(projectId: string) {
     onError: (_err, _variables, context) => {
       queryClient.setQueryData(["tasks", projectId], context?.prevTasks);
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", projectId] });
+    },
   });
 
   const createTaskMutation = useMutation({

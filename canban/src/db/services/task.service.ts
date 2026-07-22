@@ -46,8 +46,11 @@ export const TaskService = {
       .equals([task.projectId, task.columnId])
       .toArray();
 
-    const lastTask = tasksInColumn.at(-1);
-    const nextOrder = (lastTask?.order ?? -1) + 100;
+    const maxOrder = tasksInColumn.reduce(
+      (max, t) => (t.order > max ? t.order : max),
+      -100,
+    );
+    const nextOrder = maxOrder + 100;
 
     const newTask: Task = {
       id: crypto.randomUUID(),
