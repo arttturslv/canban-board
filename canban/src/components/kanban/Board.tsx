@@ -26,11 +26,29 @@ function buildGroupedTasks(tasks: TaskResponse[], columns: ColumnType[]) {
   );
 }
 
+function flattenGrouped(
+  grouped: Record<string, TaskResponse[]>,
+): TaskResponse[] {
+  return Object.entries(grouped).flatMap(([colId, tasks]) =>
+    tasks.map((task, idx) => ({
+      ...task,
+      columnId: colId,
+      order: idx * 100,
+    })),
+  );
+}
+
 export default function KanbanBoard({ projectId }: { projectId: string }) {
   const { tasks, columns, updateTaskBatch } = useKanban(projectId);
   const { createColumn } = useColumnMutation();
   const [localTasks, setLocalTasks] = useState<TaskResponse[]>(tasks);
   const isDragging = useRef(false);
+
+  const dragGroupedStateRef = useRef<Record<string, TaskResponse[]> | null>(
+    null,
+  );
+
+  const [dragTick, setDragTick] = useState(0);
 
   useEffect(() => {
     if (!isDragging.current) {
@@ -48,16 +66,23 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
     setIsSheetOpen(null);
   };
 
+
   const board = useMemo(() => {
-    const tasksByCollumn = groupBy(localTasks, (item) => item.columnId);
+    const grouped =
+      isDragging.current && dragGroupedStateRef.current
+        ? dragGroupedStateRef.current
+        : buildGroupedTasks(localTasks, columns);
 
     return filter(columns, (col) => col.visibility)
       .sort((a, b) => a.order - b.order)
       .map((col) => ({
         ...col,
-        tasks: (tasksByCollumn[col.id] ?? []).sort((a, b) => a.order - b.order),
+        tasks: (grouped[col.id] ?? []).map((task, idx) => ({
+          ...task,
+          order: idx * 100,
+        })),
       }));
-  }, [columns, localTasks]);
+  }, [columns, localTasks, dragTick]);
 
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -65,44 +90,38 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
 
   const onDragStart = (event: any) => {
     isDragging.current = true;
+    dragGroupedStateRef.current = buildGroupedTasks(localTasks, columns);
     setActiveId(event.operation.source.id);
   };
 
   const onDragOver = (event: any) => {
     const { source, target } = event.operation;
-    if (!source || !target) return;
+    if (!source || !target || !dragGroupedStateRef.current) return;
 
-    const groupedTasks = buildGroupedTasks(localTasks, columns);
-    const newGroupedState = move(groupedTasks, event) as Record<
+    const newGroupedState = move(dragGroupedStateRef.current, event) as Record<
       string,
       TaskResponse[]
     >;
 
     if (!newGroupedState) return;
 
-    const updatedTasks: TaskResponse[] = [];
-    for (const colId of Object.keys(newGroupedState)) {
-      const colTasks = newGroupedState[colId] ?? [];
-      colTasks.forEach((task, idx) => {
-        updatedTasks.push({
-          ...task,
-          columnId: colId,
-          order: idx * 100,
-        });
-      });
-    }
+    dragGroupedStateRef.current = newGroupedState;
 
-    setLocalTasks(updatedTasks);
+    setDragTick((t) => t + 1);
   };
 
   const onDragEnd = (event: any) => {
     isDragging.current = false;
     setActiveId(null);
 
-    if (event.canceled) {
+    if (event.canceled || !dragGroupedStateRef.current) {
+      dragGroupedStateRef.current = null;
       setLocalTasks(tasks);
       return;
     }
+
+    const finalTasks = flattenGrouped(dragGroupedStateRef.current);
+    dragGroupedStateRef.current = null;
 
     const dbTaskMap = new Map(tasks.map((t) => [t.id, t]));
     const batchUpdates: {
@@ -110,22 +129,24 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
       updates: { order: number; columnId: string };
     }[] = [];
 
-    localTasks.forEach((localTask) => {
-      const dbTask = dbTaskMap.get(localTask.id);
+    finalTasks.forEach((finalTask) => {
+      const dbTask = dbTaskMap.get(finalTask.id);
       if (
         !dbTask ||
-        dbTask.columnId !== localTask.columnId ||
-        dbTask.order !== localTask.order
+        dbTask.columnId !== finalTask.columnId ||
+        dbTask.order !== finalTask.order
       ) {
         batchUpdates.push({
-          id: localTask.id,
+          id: finalTask.id,
           updates: {
-            columnId: localTask.columnId,
-            order: localTask.order,
+            columnId: finalTask.columnId,
+            order: finalTask.order,
           },
         });
       }
     });
+
+    setLocalTasks(finalTasks);
 
     if (batchUpdates.length > 0) {
       updateTaskBatch.mutate(batchUpdates);
