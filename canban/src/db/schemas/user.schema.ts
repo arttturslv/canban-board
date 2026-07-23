@@ -1,15 +1,17 @@
 /** @format */
+export type AuthProviderType = "magiclink" | "github" | "google";
 
-export interface User {
+export interface Profile {
   id: string;
+  email: string;
   username: string;
   name: string;
   avatarUrl: string | null;
-  provider: "github" | "google";
-  createAt: string;
+  provider: AuthProviderType;
+  createdAt: string;
 }
 
-export interface UserSettings {
+export interface ProfileSettings {
   userId: string;
   theme: "dark" | "light";
   language: "pt-BR" | "en-US";

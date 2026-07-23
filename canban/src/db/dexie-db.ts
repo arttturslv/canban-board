@@ -5,8 +5,8 @@ import type {
   Column,
   Comment,
   Task,
-  User,
-  UserSettings,
+  Profile,
+  ProfileSettings,
   Project,
   ProjectMembers,
 } from "./schemas";
@@ -15,8 +15,8 @@ class KanbanDatabase extends Dexie {
   tasks!: Table<Task>;
   columns!: Table<Column>;
   comments!: Table<Comment>;
-  users!: Table<User>;
-  userSettings!: Table<UserSettings>;
+  profiles!: Table<Profile>;
+  profileSettings!: Table<ProfileSettings>;
   projectMembers!: Table<ProjectMembers>;
   project!: Table<Project>;
 
@@ -27,9 +27,9 @@ class KanbanDatabase extends Dexie {
       tasks: "id, columnId, projectId, [projectId+columnId], assignee",
       columns: "id, projectId",
       comments: "id, taskId, userId",
-      users: "id",
+      profiles: "id, email",
       projectMembers: "id, projectId, userId",
-      userSettings: "userId",
+      profileSettings: "userId",
       project: "id",
     });
 

@@ -3,7 +3,7 @@ import { db } from "../dexie-db";
 
 export const AppInitializerService = {
   async ensureBasicStructure(currentUserId: string) {
-    const hasSettings = await db.userSettings.get(currentUserId);
+    const hasSettings = await db.profileSettings.get(currentUserId);
 
     if (!hasSettings) {
       console.log("Primeira execução detectada. Criando estrutura básica...");
@@ -15,9 +15,9 @@ export const AppInitializerService = {
       await db
         .transaction(
           "rw",
-          [db.userSettings, db.project, db.projectMembers, db.columns],
+          [db.profileSettings, db.project, db.projectMembers, db.columns],
           async () => {
-            await db.userSettings.add({
+            await db.profileSettings.add({
               userId: currentUserId,
               theme: "dark",
               language: "pt-BR",
