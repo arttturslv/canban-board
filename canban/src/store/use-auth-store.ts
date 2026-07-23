@@ -4,6 +4,7 @@
 import { create } from "zustand";
 import type { User } from "@supabase/supabase-js";
 import type { Profile } from "@/db/schemas";
+import { AuthService } from "@/db/services/auth.service";
 
 interface AuthState {
   user: User | null;
@@ -18,5 +19,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   profile: null,
   setUser: (user) => set({ user }),
   setProfile: (profile) => set({ profile }),
-  logout: () => set({ user: null, profile: null }),
+  logout: () => {
+    set({ user: null, profile: null });
+    AuthService.signOut();
+  },
 }));

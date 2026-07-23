@@ -40,4 +40,8 @@ export const AuthService = {
 
     return { userId, error };
   },
+
+  async signOut() {
+    await supabase.auth.signOut();
+  },
 };

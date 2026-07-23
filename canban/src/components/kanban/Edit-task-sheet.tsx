@@ -26,7 +26,7 @@ import { useAuthStore } from "@/store/use-auth-store";
 import { CommentsSection } from "../comment-section";
 interface EditTaskSheetProps {
   projectId: string;
-  taskId: string;
+  taskId: string | null;
   open: boolean;
   onClose: () => void;
 }
@@ -182,7 +182,7 @@ export default function EditTaskSheet({
                 {...register("description")}
               ></Textarea>
             </span>
-            {user && profile && (
+            {user && taskId && profile && (
               <CommentsSection
                 user={profile}
                 projectId={projectId}
