@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AuthService } from "@/db/services/auth.service";
 import type { AuthError } from "@supabase/supabase-js";
+import { LogIn } from "lucide-react";
 import { useState, useTransition } from "react";
 
 export function LoginDialog() {
@@ -38,7 +39,14 @@ export function LoginDialog() {
         <div>error</div>
       ) : (
         <form>
-          <DialogTrigger render={<Button variant="outline">Login</Button>} />
+          <DialogTrigger
+            render={
+              <Button className="px-3 py-0.5  border-0  text-sm border-px border-gray-500 text-gray-200 items-center justify-center gap-1 hover:opacity-80 transition-opacity bg-gray-500/30 rounded-full duration-200 cursor-pointer">
+                Entrar
+                <LogIn className="size-3" />
+              </Button>
+            }
+          />
           <DialogContent className="sm:max-w-sm bg-[#0a040c] text-white">
             <DialogHeader>
               <DialogTitle>Login</DialogTitle>

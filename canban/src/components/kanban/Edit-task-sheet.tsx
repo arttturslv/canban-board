@@ -4,12 +4,12 @@ import {
   Calendar as CalendarIcon,
   Folder,
   ShieldAlert,
-  User,
+  User as UserIcon,
   Text,
-  SendHorizonal,
   X,
   Trash,
 } from "lucide-react";
+
 import { Sheet, SheetContent } from "../ui/sheet";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { Input } from "../ui/input";
@@ -22,10 +22,11 @@ import { DatePicker } from "../date-picker";
 import ComboboxSelection from "../combobox-selection";
 import { ConfirmationModal } from "../confirmation-dialog";
 import type { priority, taskForm } from "@/db/schemas";
-
+import { useAuthStore } from "@/store/use-auth-store";
+import { CommentsSection } from "../comment-section";
 interface EditTaskSheetProps {
   projectId: string;
-  taskId: string | null;
+  taskId: string;
   open: boolean;
   onClose: () => void;
 }
@@ -87,12 +88,14 @@ export default function EditTaskSheet({
     onClose();
   };
 
+  const { user, profile } = useAuthStore();
+
   return (
     <Sheet onOpenChange={onClose} open={open}>
       <SheetContent
         showCloseButton={false}
         className={
-          "w-200! h-full  bg-linear-to-t from-[#261a35] to-[#36353b] max-w-none! text-white pt-16 border-0!"
+          "w-200! h-full  bg-linear-to-t from-[#21172e] to-[#36353b] max-w-none! text-white pt-16 border-0!"
         }
       >
         <div className="absolute top-3 right-3 flex gap-2">
@@ -158,7 +161,7 @@ export default function EditTaskSheet({
 
               <span className="flex gap-2 flex-col">
                 <span className="flex gap-1 items-center">
-                  <User className="size-4" /> Responsável
+                  <UserIcon className="size-4" /> Responsável
                 </span>
                 <Input
                   placeholder="Sem responsável"
@@ -179,64 +182,13 @@ export default function EditTaskSheet({
                 {...register("description")}
               ></Textarea>
             </span>
-
-            <span className="flex gap-2 flex-col">
-              <span className="flex text-sm font-medium items-center">
-                Comentários
-              </span>
-
-              <div className="flex flex-col  w-full gap-6 ">
-                {/* {taskMessages.map((message) => {
-                  const author = users.find(
-                    (user) => user.id === message.authorId,
-                  )!;
-                  const isCurrentUser = author.id === "user-1";
-
-                  return (
-                    <Message
-                      align={isCurrentUser ? "end" : "start"}
-                      key={message.id}
-                    >
-                      <MessageAvatar>
-                        <Avatar>
-                          <AvatarImage src={author.avatar} />
-                          <AvatarFallback className="bg-black/20">
-                            {author.name[0]}
-                          </AvatarFallback>
-                        </Avatar>
-                      </MessageAvatar>
-
-                      <MessageContent>
-                        <MessageHeader className="font-light opacity-90">
-                          {author.name}
-                        </MessageHeader>
-
-                        <Bubble>
-                          <BubbleContent
-                            className={cn(
-                              isCurrentUser ? "bg-black/10" : "bg-blue-200/20",
-                            )}
-                          >
-                            {message.content}
-                          </BubbleContent>
-                        </Bubble>
-                      </MessageContent>
-                    </Message>
-                  );
-                })} */}
-              </div>
-
-              <span className="flex gap-1 text-sm">
-                <div className="size-8 shrink-0 rounded-full bg-black/60 mt-1" />
-                <Textarea
-                  placeholder="Adicione um comentário..."
-                  className="font-light placeholder:opacity-80 border-none! py-2! px-1 ring-0! pr-6  "
-                ></Textarea>
-                <Button className="rounded-full bg-zinc-800/40 p-1.5 h-min hover:opacity-80 cursor-pointer">
-                  <SendHorizonal className="size-4  " />
-                </Button>
-              </span>
-            </span>
+            {user && profile && (
+              <CommentsSection
+                user={profile}
+                projectId={projectId}
+                taskId={taskId}
+              />
+            )}
           </div>
 
           <div className=" flex items-center m-4">
@@ -244,7 +196,7 @@ export default function EditTaskSheet({
               disabled={disabled}
               type="submit"
               className={
-                "bg-[#252323] hover:bg-[#1b1919] cursor-pointer transition-all duration-200 rounded-lg w-full py-2"
+                "bg-[#3d2c49] hover:bg-[#2f2238] cursor-pointer transition-all duration-200 rounded-lg w-full py-2"
               }
             >
               Salvar

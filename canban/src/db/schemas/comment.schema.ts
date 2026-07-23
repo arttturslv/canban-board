@@ -26,3 +26,12 @@ export interface CommentReaction {
   userId: string;
   reaction: string;
 }
+
+export type CommentAgregated = Comment & {
+  author: {
+    id: string;
+    avatarUrl: string | null;
+    name: string | null;
+    username: string;
+  };
+};

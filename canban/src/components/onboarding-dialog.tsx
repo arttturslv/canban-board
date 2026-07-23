@@ -8,7 +8,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -70,7 +69,6 @@ export function OnboardingModal({
   return (
     <AlertDialog open={show}>
       <form>
-        <AlertDialogTrigger render={<Button variant="outline">Login</Button>} />
         <AlertDialogContent className="sm:max-w-sm bg-[#0a040c] text-white">
           <AlertDialogHeader>
             <AlertDialogTitle>
