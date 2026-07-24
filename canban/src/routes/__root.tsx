@@ -1,9 +1,13 @@
 /** @format */
 
-import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
+import type { User } from "@supabase/supabase-js";
 
-export const Route = createRootRoute({
+interface MyRouterContext {
+  user: User | null
+}
+export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: RootComponent,
 });
 
