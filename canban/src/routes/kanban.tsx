@@ -6,11 +6,7 @@ import { useAppInit } from "@/hooks/use-app-init";
 
 export const Route = createFileRoute("/kanban")({
   beforeLoad: async ({ context }) => {
-      if (!context.user) {
-        throw redirect({
-          to: '/',
-        })
-      }
+
     },
   component: RouteComponent,
 });
