@@ -1,6 +1,13 @@
 /** @format */
 
-import { FileStack, LogOut, Settings2, Share2 } from "lucide-react";
+import {
+  Bell,
+  EllipsisVertical,
+  FileStack,
+  LogOut,
+  Settings2,
+  Share2,
+} from "lucide-react";
 import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
 import { useProjectsMutation } from "@/hooks/use-project-mutation";
@@ -45,16 +52,21 @@ export const KanbanHeader = ({ projectId }: { projectId: string }) => {
   const currentLength =
     localName.length > minLength ? localName.length : minLength;
 
-  const { user, logout } = useAuthStore();
+  const { logout } = useAuthStore();
 
   return (
     <div className="flex flex-col justify-between items-center  sm:mt-4 mt-2">
       <div className="sm:flex justify-between items-center py-2 mb-2 px-4 w-full ">
-        <div className="sm:w-32 w-full max-sm:pb-3 justify-center flex gap-2 items-center">
-          <img src="https://i.imgur.com/jBbbWDt.png" className="size-8" />
-          <h1 className="font-black text-[#9b5fcc]">Canban</h1>
-        </div>
-        <span className=" flex items-center justify-center gap-2 rounded-full bg-zinc-700 sm:w-min w-full px-4">
+        <a
+          href="/"
+          className="sm:w-32 w-full max-sm:pb-3 justify-center flex gap-2 items-center"
+        >
+          <img
+            src="/logo-inline.png"
+            className="flex h-7  items-center justify-center  "
+          ></img>
+        </a>
+        <span className=" flex items-center justify-center gap-2 rounded-full h-8 bg-[#7B2EA8]/40 text-white/80 sm:w-min w-full px-4">
           <FileStack className="size-3" />
           <Input
             onChange={onChangeInput}
@@ -62,41 +74,42 @@ export const KanbanHeader = ({ projectId }: { projectId: string }) => {
             placeholder="Kanban Board"
             value={localName}
             className={cn(
-              "text-zinc-100 placeholder:text-zinc-100   ring-0! border-0!  p-0! rounded-md h-7",
+              " placeholder:text-zinc-100   ring-0! border-0!  p-0! rounded-md h-7",
             )}
             maxLength={42}
           ></Input>
         </span>
         <div className=" gap-2 min-w-32 flex ">
-          {user && (
-            <div className="flex gap-2">
-              <button
-                onClick={openFilterSheet}
-                className="px-3 flex py-0.5  text-sm border-px border-purple-500 text-purple-200 items-center justify-center gap-1 hover:opacity-80 transition-opacity bg-purple-500/30 rounded-full duration-200 cursor-pointer"
-              >
-                Share
-                <Share2 className="size-3" />
-              </button>
-
-              <button
-                onClick={openFilterSheet}
-                className="px-3 py-0.5   text-sm border-px border-gray-500 text-gray-200 items-center justify-center gap-1 hover:opacity-80 transition-opacity bg-gray-500/30 rounded-full duration-200 cursor-pointer"
-              >
-                <Settings2 className="size-3" />
-              </button>
-            </div>
-          )}
-
-          {user ? (
-            <Button
-              className="px-3 py-0.5  border-0  text-sm border-px border-gray-500 text-gray-200 items-center justify-center gap-1 hover:opacity-80 transition-opacity bg-gray-500/30 rounded-full duration-200 cursor-pointer"
-              onClick={logout}
+          <div className="flex gap-2">
+            <button
+              onClick={openFilterSheet}
+              className="px-3 flex h-8 text-sm border-px  text-purple-200 items-center justify-center gap-1 hover:contrast-125 transition-opacity bg-[#7B2EA8]/40 rounded-full duration-200 cursor-pointer"
             >
-              <LogOut className="size-3" />
-            </Button>
-          ) : (
-            <LoginDialog />
-          )}
+              Compartilhar
+              <Share2 className="size-4" />
+            </button>
+
+            <button
+              onClick={openFilterSheet}
+              className="p-0! m-0! size-8  text-sm  flex text-gray-200 items-center justify-center hover:opacity-80 transition-opacity bg-gray-500/30 rounded-full duration-200 cursor-pointer"
+            >
+              <Bell className="size-4" />
+            </button>
+
+            <button
+              onClick={openFilterSheet}
+              className="p-0! m-0! size-8  text-sm  flex text-gray-200 items-center justify-center hover:opacity-80 transition-opacity bg-gray-500/30 rounded-full duration-200 cursor-pointer"
+            >
+              <EllipsisVertical className="size-4" />
+            </button>
+
+            <button
+              onClick={logout}
+              className="p-0! m-0! size-8  text-sm  flex text-gray-200 items-center justify-center hover:contrast-125 transition-opacity bg-[#7B2EA8]/40 rounded-full duration-200 cursor-pointer"
+            >
+              <LogOut className="size-4" />
+            </button>
+          </div>
         </div>
       </div>
 

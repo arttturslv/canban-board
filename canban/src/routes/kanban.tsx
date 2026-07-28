@@ -1,13 +1,11 @@
 /** @format */
 
-import { createFileRoute, redirect} from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import KanbanBoard from "../components/kanban/Board";
 import { useAppInit } from "@/hooks/use-app-init";
 
 export const Route = createFileRoute("/kanban")({
-  beforeLoad: async ({ context }) => {
-
-    },
+  beforeLoad: async ({ context }) => {},
   component: RouteComponent,
 });
 
@@ -30,9 +28,9 @@ function RouteComponent() {
         className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 opacity-50 z-0"
         style={{
           width: "100vw",
-          height: 600,
+          height: 900,
           background:
-            "radial-gradient(ellipse 60% 50% at 50% 0%, rgba(124,58,237,0.18) 0%, transparent 70%)",
+            "radial-gradient(ellipse 140% 100% at 50% 0%, rgba(124,58,237,0.25) 0%, transparent 70%)",
         }}
       />
     </div>
