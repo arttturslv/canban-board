@@ -1,6 +1,6 @@
 /** @format */
 import { Calendar, MessageCircle, User } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getPriorityColor } from "@/lib/utils";
 import { memo } from "react";
 import { useSortable } from "@dnd-kit/react/sortable";
 
@@ -96,18 +96,3 @@ export const TaskItem = memo(function TaskItem({
     </div>
   );
 });
-
-const getPriorityColor = (priority: string) => {
-  switch (priority) {
-    case "low":
-      return "bg-blue-300";
-    case "medium":
-      return "bg-yellow-300";
-    case "high":
-      return "bg-red-300";
-    case "urgent":
-      return "bg-red-600";
-    default:
-      return "bg-white-300";
-  }
-};

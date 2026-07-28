@@ -43,14 +43,13 @@ export default function ComboboxSelection<T extends FieldValues>({
               {icon}
               <ComboboxInput
                 className={cn(
-                  "px-0! mx-0! ring-0! w-full rounded-xl bg-[#2C2828] ",
-                  icon && "bg-transparent",
+                  "px-0! mx-0! ring-0! w-full rounded-xl bg-transparent",
                 )}
                 placeholder="Selecione"
                 ref={field.ref}
               />
             </div>
-            <ComboboxContent className={"px-0!  mx-0! bg-[#161416] ring-0! "}>
+            <ComboboxContent className={"px-0!  mx-0! bg-[#201820] ring-0! "}>
               <ComboboxEmpty>No items found.</ComboboxEmpty>
               <ComboboxList>
                 {(item) => (

@@ -20,3 +20,18 @@ export const tags = [
 ];
 
 export const priorities: priority[] = ["low", "medium", "high", "urgent"];
+
+export const getPriorityColor = (priority: string) => {
+  switch (priority) {
+    case "low":
+      return "bg-blue-300";
+    case "medium":
+      return "bg-yellow-300";
+    case "high":
+      return "bg-red-300";
+    case "urgent":
+      return "bg-red-600";
+    default:
+      return "bg-white-300";
+  }
+};

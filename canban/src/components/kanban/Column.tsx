@@ -2,7 +2,7 @@
 
 import { Plus, Trash } from "lucide-react";
 import { TaskItem } from "./Task-item";
-import NewTask from "./New-task";
+import NewTask from "./new-task-modal";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useTaskMutations } from "../../hooks/use-task-mutation";
 import { cn } from "@/lib/utils";

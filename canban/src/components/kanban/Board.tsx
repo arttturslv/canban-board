@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import EditTaskSheet from "./Edit-task-sheet";
-import { KanbanHeader } from "./Header";
+import { KanbanHeader } from "./header";
 import { map, groupBy, filter } from "lodash";
 import { useKanban } from "../../hooks/use-board";
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
@@ -65,7 +65,6 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
   const closeEditTaskSheet = () => {
     setIsSheetOpen(null);
   };
-
 
   const board = useMemo(() => {
     const grouped =
