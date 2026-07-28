@@ -4,12 +4,16 @@ export type AuthProviderType = "magiclink" | "github" | "google";
 export interface Profile {
   id: string;
   email: string;
-  username: string;
   name: string;
+  bornDate?: string;
   avatarUrl: string | null;
   provider: AuthProviderType;
   createdAt: string;
 }
+
+export type ProfileInput = Omit<Profile, "avatarUrl"> & {
+  avatarFile?: FileList;
+};
 
 export interface ProfileSettings {
   userId: string;

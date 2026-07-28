@@ -199,7 +199,7 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
           onClick={() =>
             createColumn.mutate({ column: { projectId, title: "Nova coluna" } })
           }
-          className="flex items-center shrink-0 max-h-12 sm:max-w-[25vw] justify-center gap-1 py-2 border-2 border-dashed w-full rounded-full  border-zinc-200/20  opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-pointer max-sm:w-64"
+          className="flex items-center shrink-0 max-h-12 text-sm sm:max-w-[25vw] justify-center gap-1 py-2 border-[1.5px] border-dashed w-full rounded-full  border-white opacity-30  hover:opacity-50 transition-opacity duration-200 cursor-pointer max-sm:w-64"
         >
           <Plus className="size-4" />
           <span>Adicionar coluna</span>

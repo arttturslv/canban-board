@@ -1,16 +1,19 @@
 /** @format */
 
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import KanbanBoard from "../components/kanban/Board";
+import { createFileRoute } from "@tanstack/react-router";
+import KanbanBoard from "../components/kanban/board";
 import { useAppInit } from "@/hooks/use-app-init";
+import { useAuthStore } from "@/store/use-auth-store";
+import { LoginDialog } from "@/components/login-dialog";
 
 export const Route = createFileRoute("/kanban")({
-  beforeLoad: async ({ context }) => {},
   component: RouteComponent,
 });
 
 function RouteComponent() {
   const { data: initData, isLoading } = useAppInit(null);
+  const { user } = useAuthStore();
+  console.log(!!user);
 
   if (isLoading) {
     return "loading";
@@ -22,6 +25,7 @@ function RouteComponent() {
 
   return (
     <div className="bg-linear-to-b from-[#211E21] to-[#080308] text-white w-full h-screen">
+      <LoginDialog isLogged={user === null} />
       <KanbanBoard projectId={initData.defaultProjectId} />
       <div
         aria-hidden

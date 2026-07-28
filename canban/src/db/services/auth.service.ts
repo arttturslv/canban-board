@@ -4,20 +4,29 @@ import { supabase } from "@/lib/supabase";
 
 /** @format */
 import { db } from "../dexie-db";
-import type { Profile, ProfileSettings } from "../schemas";
+import type { Profile, ProfileInput, ProfileSettings } from "../schemas";
 
 export const AuthService = {
   async onboardUser({
     profile,
     profileSettings,
   }: {
-    profile: Profile;
+    profile: ProfileInput;
     profileSettings: ProfileSettings;
   }) {
+    /*
+    todo: change avatarFile to avatarUrl by uploading avatar to supabase storage;
+    */
+
+    const updatedProfile: Profile = {
+      ...profile,
+      avatarUrl: null,
+    };
+
     await db
       .transaction("rw", [db.profileSettings, db.profiles], async () => {
         await db.profileSettings.put(profileSettings);
-        await db.profiles.put(profile);
+        await db.profiles.put(updatedProfile);
       })
       .catch((_e) => {
         return { id: null, error: "Database transaction error" };
@@ -35,8 +44,8 @@ export const AuthService = {
       },
     });
 
-    const user = data.user as any;
-    const userId = (user.id as string) || null;
+    const user = data?.user as any;
+    const userId = (user?.id as string) || null;
 
     return { userId, error };
   },

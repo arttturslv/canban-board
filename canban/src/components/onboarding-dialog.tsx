@@ -1,6 +1,5 @@
 /** @format */
 
-import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -12,10 +11,19 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { Profile, ProfileSettings } from "@/db/schemas";
+import type { ProfileInput, ProfileSettings } from "@/db/schemas";
 import { AuthService } from "@/db/services/auth.service";
 import { useAuthStore } from "@/store/use-auth-store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { DatePicker } from "./date-picker";
+import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
+import { Upload } from "lucide-react";
+
+interface onboardingForm {
+  name: string;
+  bornDate?: string;
+  avatarFile?: FileList;
+}
 
 export function OnboardingModal({
   onSuccess,
@@ -26,18 +34,18 @@ export function OnboardingModal({
 }) {
   const user = useAuthStore((s) => s.user);
   const setProfile = useAuthStore((s) => s.setProfile);
-  const [error, setError] = useState();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit: SubmitHandler<onboardingForm> = async (data) => {
+    console.log("user", user);
+
     if (!user) return;
 
-    const profile: Profile = {
+    const profile: ProfileInput = {
       id: user.id,
+      name: data.name!,
       email: user.email!,
-      name,
-      username: username || name + user.email!.slice(0, 5),
-      avatarUrl: null,
+      avatarFile: data.avatarFile,
+      bornDate: data.bornDate,
       provider: "magiclink",
       createdAt: new Date().toISOString(),
     };
@@ -55,61 +63,125 @@ export function OnboardingModal({
     });
 
     if (error) {
-      setError(error);
       console.error(error);
+    } else {
+      setProfile(profile);
+      onSuccess();
     }
-
-    setProfile(profile);
-    onSuccess();
   };
 
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<onboardingForm>({
+    values: {
+      name: "",
+      bornDate: "",
+      avatarFile: undefined,
+    },
+  });
 
+  const avatarFile = useWatch({ control, name: "avatarFile" });
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (avatarFile && avatarFile.length > 0) {
+      const file = avatarFile[0];
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewUrl(objectUrl);
+
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+  }, [avatarFile]);
   return (
     <AlertDialog open={show}>
-      <form>
-        <AlertDialogContent className="sm:max-w-sm bg-[#0a040c] text-white">
+      <AlertDialogContent className="sm:max-w-sm bg-[#211E21] ring-0 text-white">
+        <form className="" onSubmit={handleSubmit(onSubmit)}>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              Boas-vindas! Como podemos te chamar?
+            <AlertDialogTitle className="text-md font-medium">
+              Primeiros passos{" "}
             </AlertDialogTitle>
-            <AlertDialogDescription>
-              Vamos completar seu login
+            <AlertDialogDescription className="font-light">
+              Vamos finalizar seu cadastro, informe seus dados para podermos
+              oferecer uma experiência mais customizada.{" "}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <FieldGroup>
-            <Field>
-              <Label htmlFor="name">Nome</Label>
-              <Input
-                className="bg-[#252323] ring-0! outline-0! border-0!"
-                onChange={(e) => setName(e.target.value)}
-                id="name"
-                name="name"
-                required
-                defaultValue="Pedro Lopes"
+          <FieldGroup className="gap-3">
+            <Field className="gap-2 flex items-center justify-center w-full ">
+              <span className="text-xs opacity-45 text-center">
+                Imagem de perfil
+              </span>
+              <Label
+                className="   flex flex-col items-center justify-center gap-2"
+                htmlFor="avatar-upload"
+              >
+                <span className="size-24 rounded-full flex items-center justify-center bg-[#2C2828]">
+                  {previewUrl ? (
+                    <img
+                      src={previewUrl}
+                      alt="Preview do avatar"
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  ) : (
+                    <Upload className="size-5 opacity-45 group-hover:opacity-100 transition-opacity duration-200" />
+                  )}
+                </span>
+                <span className="text-xs opacity-45 text-center">
+                  Aceitamos .jpg, .png ou .jpeg
+                </span>
+              </Label>
+              <input
+                id="avatar-upload"
+                type="file"
+                accept="image/png, image/jpeg, image/jpg"
+                className="hidden"
+                {...register("avatarFile")}
               />
             </Field>
-            <Field>
-              <Label htmlFor="username">Username</Label>
+
+            <Field className="gap-2">
+              <Label className="font-light text-sm" htmlFor="name">
+                Nome*
+              </Label>
               <Input
-                className="bg-[#252323] ring-0! outline-0! border-0!"
-                onChange={(e) => setUsername(e.target.value)}
-                id="username"
-                name="username"
+                className="bg-[#2C2828] ring-0! outline-0! border-0! rounded-xl h-10 font-light"
                 required
-                defaultValue="PeLopes"
+                {...register("name", {
+                  required: "O nome é obrigatório",
+                  minLength: {
+                    value: 4,
+                    message: "O nome deve ter no mínimo 4 caracteres",
+                  },
+                })}
               />
+              {errors.name && (
+                <span className="text-xs text-red-400">
+                  {errors.name.message}
+                </span>
+              )}
+            </Field>
+
+            <Field className="gap-2">
+              <Label className="font-light text-sm" htmlFor="bornDate">
+                Data de Nascimento
+              </Label>{" "}
+              <DatePicker control={control} controlName={"bornDate"} />
             </Field>
           </FieldGroup>
-          {error && <span className="text-red-400 text-sm">{error}</span>}
           <AlertDialogFooter>
-            <Button onClick={handleSubmit} type="button">
-              Salvar
-            </Button>
+            <button
+              className={
+                " font-normal mt-6 text-red-200 bg-[#3D6A3F] rounded-3xl h-10 grow hover:contrast-125 cursor-pointer"
+              }
+              type="submit"
+            >
+              Confirmar
+            </button>
           </AlertDialogFooter>
-        </AlertDialogContent>
-      </form>
+        </form>
+      </AlertDialogContent>
     </AlertDialog>
   );
 }

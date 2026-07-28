@@ -1,5 +1,10 @@
 /** @format */
-import { Controller, type Control } from "react-hook-form";
+import {
+  Controller,
+  type Control,
+  type FieldValues,
+  type Path,
+} from "react-hook-form";
 
 import { format } from "date-fns";
 import { ChevronDownIcon } from "lucide-react";
@@ -11,14 +16,16 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ptBR } from "date-fns/locale";
-import type { taskForm } from "@/db/schemas";
 
-interface DatePickerProps {
-  control: Control<taskForm, any, taskForm>;
-  controlName: keyof taskForm;
+interface DatePickerProps<T extends FieldValues> {
+  control: Control<T, any, T>;
+  controlName: Path<T>;
 }
 
-export function DatePicker({ control, controlName }: DatePickerProps) {
+export function DatePicker<T extends FieldValues>({
+  control,
+  controlName,
+}: DatePickerProps<T>) {
   return (
     <Controller
       name={controlName}
@@ -28,7 +35,7 @@ export function DatePicker({ control, controlName }: DatePickerProps) {
           <Popover>
             <PopoverTrigger
               type="button"
-              className=" inline-flex h-9  max-w-42 w-72 shrink-0 items-center  justify-between rounded-xl bg-[#2C2828] px-3 py-2 text-sm "
+              className=" inline-flex h-10   w-72 shrink-0 items-center  justify-between rounded-xl bg-[#2C2828] px-3 py-2 text-sm "
               data-empty={!field.value}
             >
               <span className="w-full text-start">
@@ -43,6 +50,7 @@ export function DatePicker({ control, controlName }: DatePickerProps) {
 
             <PopoverContent className="w-auto p-0 bg-[#201820] " align="start">
               <Calendar
+                captionLayout="dropdown"
                 locale={ptBR}
                 lang="ptBR"
                 mode="single"

@@ -81,7 +81,7 @@ function Calendar({
           defaultClassNames.dropdown_root,
         ),
         dropdown: cn(
-          "absolute inset-0 bg-popover opacity-0",
+          "absolute bg-[#201820]! custom-scroll inset-0 bg-popover opacity-0",
           defaultClassNames.dropdown,
         ),
         caption_label: cn(

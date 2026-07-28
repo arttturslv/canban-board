@@ -45,8 +45,8 @@ function RouteComponent() {
         />
 
         <div className="relative mx-auto max-w-5xl px-6 text-center">
-          <div className="mb-6 inline-flex items-center  gap-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-3.5 py-1.5 text-xs font-medium text-[#7B2EA8]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#7B2EA8] " />
+          <div className="mb-6 inline-flex items-center  gap-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-3.5 py-1.5 text-xs font-medium text-[#b575db]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#b575db] " />
             Gratuito para usar
           </div>
 
