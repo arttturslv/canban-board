@@ -5,7 +5,6 @@ import {
   EllipsisVertical,
   FileStack,
   LogOut,
-  Settings2,
   Share2,
 } from "lucide-react";
 import { Input } from "../ui/input";
@@ -13,9 +12,7 @@ import { cn } from "@/lib/utils";
 import { useProjectsMutation } from "@/hooks/use-project-mutation";
 import { debounce } from "lodash";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { LoginDialog } from "../login-dialog";
 import { useAuthStore } from "@/store/use-auth-store";
-import { Button } from "../ui/button";
 
 export const KanbanHeader = ({ projectId }: { projectId: string }) => {
   const { updateProject, useProject } = useProjectsMutation();
@@ -56,7 +53,7 @@ export const KanbanHeader = ({ projectId }: { projectId: string }) => {
 
   return (
     <div className="flex flex-col justify-between items-center  sm:mt-4 mt-2">
-      <div className="sm:flex justify-between items-center py-2 mb-2 px-4 w-full ">
+      <div className="sm:flex justify-between items-center py-2 mb-2 px-4 w-full max-sm:space-y-2">
         <a
           href="/"
           className="sm:w-32 w-full max-sm:pb-3 justify-center flex gap-2 items-center"
@@ -79,41 +76,37 @@ export const KanbanHeader = ({ projectId }: { projectId: string }) => {
             maxLength={42}
           ></Input>
         </span>
-        <div className=" gap-2 min-w-32 flex ">
-          <div className="flex gap-2">
-            <button
-              onClick={openFilterSheet}
-              className="px-3 flex h-8 text-sm border-px  text-purple-200 items-center justify-center gap-1 hover:contrast-125 transition-opacity bg-[#7B2EA8]/40 rounded-full duration-200 cursor-pointer"
-            >
-              Compartilhar
-              <Share2 className="size-4" />
-            </button>
+        <div className="flex gap-2 max-sm:justify-end">
+          <button
+            onClick={openFilterSheet}
+            className="max-sm:p-0! max-sm:size-8 px-3  h-8    flex text-sm border-px  text-purple-200 items-center justify-center gap-1 hover:contrast-125 transition-opacity bg-[#7B2EA8]/40 rounded-full duration-200 cursor-pointer"
+          >
+            <span className="max-sm:hidden">Compartilhar</span>
+            <Share2 className="size-4" />
+          </button>
 
-            <button
-              onClick={openFilterSheet}
-              className="p-0! m-0! size-8  text-sm  flex text-gray-200 items-center justify-center hover:opacity-80 transition-opacity bg-gray-500/30 rounded-full duration-200 cursor-pointer"
-            >
-              <Bell className="size-4" />
-            </button>
+          <button
+            onClick={openFilterSheet}
+            className="p-0! m-0! size-8  text-sm  flex text-gray-200 items-center justify-center hover:opacity-80 transition-opacity bg-gray-500/30 rounded-full duration-200 cursor-pointer"
+          >
+            <Bell className="size-4" />
+          </button>
 
-            <button
-              onClick={openFilterSheet}
-              className="p-0! m-0! size-8  text-sm  flex text-gray-200 items-center justify-center hover:opacity-80 transition-opacity bg-gray-500/30 rounded-full duration-200 cursor-pointer"
-            >
-              <EllipsisVertical className="size-4" />
-            </button>
+          <button
+            onClick={openFilterSheet}
+            className="p-0! m-0! size-8  text-sm  flex text-gray-200 items-center justify-center hover:opacity-80 transition-opacity bg-gray-500/30 rounded-full duration-200 cursor-pointer"
+          >
+            <EllipsisVertical className="size-4" />
+          </button>
 
-            <button
-              onClick={logout}
-              className="p-0! m-0! size-8  text-sm  flex text-gray-200 items-center justify-center hover:contrast-125 transition-opacity bg-[#7B2EA8]/40 rounded-full duration-200 cursor-pointer"
-            >
-              <LogOut className="size-4" />
-            </button>
-          </div>
+          <button
+            onClick={logout}
+            className="p-0! m-0! size-8  text-sm  flex text-gray-200 items-center justify-center hover:contrast-125 transition-opacity bg-[#7B2EA8]/40 rounded-full duration-200 cursor-pointer"
+          >
+            <LogOut className="size-4" />
+          </button>
         </div>
       </div>
-
-      <span className="bg-zinc-800 h-px w-full opacity-90" />
     </div>
   );
 };

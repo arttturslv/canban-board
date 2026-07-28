@@ -1,5 +1,5 @@
 /** @format */
-import { Bookmark, Folder, Save, ShieldAlert, Text, Trash } from "lucide-react";
+import { Save } from "lucide-react";
 import { cn, getPriorityColor, priorities, tags } from "@/lib/utils";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -145,7 +145,7 @@ export default function NewTask({
         <Button
           onClick={onClose}
           className={
-            "w-min bg-gray-500/20  mt-2 font-normal text- hover:bg-gray-500/10 transition-all duration-200 cursor-pointer"
+            "w-min bg-gray-500/20  mt-2 font-normal text- hover:bg-gray-500/10 transition-all px-4 duration-200 cursor-pointer"
           }
         >
           Cancelar

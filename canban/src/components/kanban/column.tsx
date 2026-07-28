@@ -1,7 +1,7 @@
 /** @format */
 
-import { Plus, Trash } from "lucide-react";
-import { TaskItem } from "./Task-item";
+import { Plus } from "lucide-react";
+import { TaskItem } from "./task";
 import NewTask from "./new-task-modal";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useTaskMutations } from "../../hooks/use-task-mutation";
@@ -12,12 +12,14 @@ import type { TaskResponse } from "@/db/schemas";
 import { useColumnMutation } from "@/hooks/use-column-mutation";
 import { debounce } from "lodash";
 import { Input } from "@base-ui/react";
+import { ConfirmationModal } from "../confirmation-dialog";
 interface ColumnProps {
   id: string;
   title: string;
   taskAction: (taskId: string) => void;
   tasks: TaskResponse[];
   projectId: string;
+  index: number;
 }
 export const Column = memo(function Column({
   id,
@@ -25,6 +27,7 @@ export const Column = memo(function Column({
   taskAction,
   tasks,
   projectId,
+  index,
 }: ColumnProps) {
   const { createTask } = useTaskMutations(projectId);
   const [showNewTask, setShowNewTask] = useState(false);
@@ -74,8 +77,8 @@ export const Column = memo(function Column({
     <div
       ref={ref}
       className={cn(
-        " w-[25vw]  bg-linear-to-t from-[#50396e42] to-[#36353b] p-4 rounded-3xl h-full transition-all duration-200 shrink-0 max-sm:min-w-[80vw] md:min-w-[50vw] lg:min-w-0",
-        isDropTarget && "bg-[#333236]",
+        " w-[25vw] flex flex-col bg-[#3E3D44]/20 px-4 pt-3 rounded-3xl h-full transition-all duration-200 shrink-0 max-sm:min-w-[80vw] md:min-w-[50vw] lg:min-w-0",
+        isDropTarget && "bg-[#3E3D44]/40",
       )}
     >
       <div className="flex justify-between items-center space-x-1">
@@ -90,15 +93,6 @@ export const Column = memo(function Column({
           minLength={1}
         ></Input>
         <span className="opacity-60 text-sm">{taskCount}</span>
-        <button
-          onClick={softDeleteColumn}
-          className={cn(
-            "cursor-pointer hover:text-red-400 duration-200 transition-all",
-            taskCount != 0 && "opacity-0 size-0!",
-          )}
-        >
-          <Trash className="size-4 " />
-        </button>
       </div>
       <div className="flex flex-col gap-2 mt-2 ">
         {tasks.map((task, index) => (
@@ -129,13 +123,28 @@ export const Column = memo(function Column({
         {!showNewTask && (
           <button
             onClick={addNewTask}
-            className="flex items-center justify-center gap-1 py-2 border-2 border-dashed w-full rounded-full  border-zinc-200/20  opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-pointer"
+            className="flex items-center justify-center gap-1 py-2 border-[1.5px] border-dashed w-full rounded-full text-sm border-white opacity-30  hover:opacity-50 transition-opacity duration-200 cursor-pointer"
           >
             <Plus className="size-4" />
             <span>Adicionar tarefa</span>
           </button>
         )}
       </div>
+      <ConfirmationModal
+        title="Você deseja apagar a coluna?"
+        action={softDeleteColumn}
+        description="Essa ação não pode ser desfeita. A coluna apagada não poderá mais ser restaurada."
+      >
+        <button
+          className={cn(
+            "cursor-pointer hover:text-red-400 duration-200 text-center w-full mt-auto h-10 mb-1   text-sm text-[#D56969] transition-all",
+            index <= 3 && "opacity-0 size-0!",
+          )}
+        >
+          Apagar coluna
+        </button>
+      </ConfirmationModal>
+      <button onClick={softDeleteColumn}></button>
     </div>
   );
 });
