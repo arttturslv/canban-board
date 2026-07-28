@@ -32,6 +32,5 @@ export type CommentAgregated = Comment & {
     id: string;
     avatarUrl: string | null;
     name: string | null;
-    username: string;
   };
 };

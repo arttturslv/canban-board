@@ -26,7 +26,6 @@ export const CommentService = {
         author: {
           id: comment.createdBy,
           name: user?.name || "Usuário desconhecido",
-          username: user?.username || "desconhecido",
           avatarUrl: user?.avatarUrl || null,
         },
       };

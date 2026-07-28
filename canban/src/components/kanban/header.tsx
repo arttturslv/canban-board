@@ -13,10 +13,12 @@ import { useProjectsMutation } from "@/hooks/use-project-mutation";
 import { debounce } from "lodash";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAuthStore } from "@/store/use-auth-store";
+import { useRouter } from "@tanstack/react-router";
 
 export const KanbanHeader = ({ projectId }: { projectId: string }) => {
   const { updateProject, useProject } = useProjectsMutation();
   const { data: project } = useProject(projectId);
+  const router = useRouter();
 
   const [localName, setLocalName] = useState(project?.name || "Kanban Board");
 
@@ -49,7 +51,12 @@ export const KanbanHeader = ({ projectId }: { projectId: string }) => {
   const currentLength =
     localName.length > minLength ? localName.length : minLength;
 
-  const { logout } = useAuthStore();
+  const logout = () => {
+    logoutService();
+    router.navigate({ to: "/", replace: true });
+  };
+
+  const { logout: logoutService } = useAuthStore();
 
   return (
     <div className="flex flex-col justify-between items-center  sm:mt-4 mt-2">
