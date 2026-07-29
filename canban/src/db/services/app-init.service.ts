@@ -19,7 +19,7 @@ export const AppInitializerService = {
           async () => {
             await db.profileSettings.add({
               userId: currentUserId,
-              theme: "dark",
+              themeDark: true,
               language: "pt-BR",
               notificationsEnabled: false,
             });
