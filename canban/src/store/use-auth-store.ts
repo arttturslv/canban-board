@@ -3,14 +3,14 @@
 // store/useAuthStore.ts
 import { create } from "zustand";
 import type { User } from "@supabase/supabase-js";
-import type { Profile } from "@/db/schemas";
+import type { ProfileUser } from "@/db/schemas";
 import { AuthService } from "@/db/services/auth.service";
 
 interface AuthState {
   user: User | null;
-  profile: Profile | null;
+  profile: ProfileUser | null;
   setUser: (user: User | null) => void;
-  setProfile: (profile: any) => void;
+  setProfile: (profile: ProfileUser | null) => void;
   logout: () => void;
 }
 

@@ -1,12 +1,11 @@
 /** @format */
+@import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&display=swap");
 
 @import "tailwindcss";
 
 @import "tw-animate-css";
 
 @import "shadcn/tailwind.css";
-
-@import "@fontsource-variable/inter";
 
 /* Opção A: Padrão moderno (Firefox, Chrome, Edge) */
 .custom-scroll {
@@ -37,4 +36,15 @@
 /* Efeito ao passar o mouse por cima do indicador */
 .custom-scroll::-webkit-scrollbar-thumb:hover {
   background: #211e21;
+}
+
+@theme {
+  --font-archivo: "Archivo", var(--font-sans, sans-serif);
+  --font-sans: "Archivo", var(--font-sans, sans-serif);
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans) !important;
+  }
 }

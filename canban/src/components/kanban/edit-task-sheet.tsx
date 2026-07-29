@@ -2,12 +2,10 @@
 import {
   BookMarked,
   Calendar as CalendarIcon,
-  Folder,
   ShieldAlert,
   User as UserIcon,
   Text,
   X,
-  Trash,
 } from "lucide-react";
 
 import { Sheet, SheetContent } from "../ui/sheet";
@@ -15,7 +13,7 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 
-import { priorities, tags } from "@/lib/utils";
+import { cn, priorities, tags } from "@/lib/utils";
 import { useTaskMutations } from "../../hooks/use-task-mutation";
 import { Button } from "../ui/button";
 import { DatePicker } from "../date-picker";
@@ -65,6 +63,7 @@ export default function EditTaskSheet({
       id: taskId,
       updates: {
         ...data,
+        tags: data.tag ? [data.tag] : [],
         priority: (data.priority || "low") as priority,
       },
     });
@@ -95,21 +94,11 @@ export default function EditTaskSheet({
       <SheetContent
         showCloseButton={false}
         className={
-          "w-200! h-full  bg-linear-to-t from-[#21172e] to-[#36353b] max-w-none! text-white pt-16 border-0!"
+          "w-200! h-full  bg-[#211E21] max-w-none! text-white pt-16 border-0!"
         }
       >
         <div className="absolute top-3 right-3 flex gap-2">
-          <div className="cursor-pointer hover:text-red-400 duration-200 transition-all">
-            <ConfirmationModal
-              title="Deletar Task"
-              action={onDelete}
-              description="As tarefas deletadas não podem ser recuperadas"
-            >
-              <button className="mt-1.5">
-                <Trash className="size-3.5 " />
-              </button>
-            </ConfirmationModal>
-          </div>
+          <div className="cursor-pointer hover:text-red-400 duration-200 transition-all"></div>
           <button onClick={onClose} className="cursor-pointer">
             <X className="size-4.5" />
           </button>
@@ -118,9 +107,8 @@ export default function EditTaskSheet({
           className="h-full flex flex-col justify-between"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className=" px-6 space-y-3  flex flex-col ">
-            <span className="flex gap-2 items-center justify-center bg-[#252323] rounded-xl px-3">
-              <Folder className="size-4" />
+          <div className=" px-6 space-y-3  flex flex-col text-white/80">
+            <span className="flex gap-2 items-center justify-center bg-[#2C2828] rounded-xl px-3">
               <Input
                 placeholder="Digite o título..."
                 className="font-bold placeholder:opacity-80 px-0 border-none! ring-0! pr-8 "
@@ -138,6 +126,7 @@ export default function EditTaskSheet({
                   array={tags}
                   controlName="tag"
                   control={control}
+                  type="constrast"
                 />
               </span>
 
@@ -156,6 +145,7 @@ export default function EditTaskSheet({
                   array={priorities}
                   controlName="priority"
                   control={control}
+                  type="constrast"
                 />
               </span>
 
@@ -165,7 +155,7 @@ export default function EditTaskSheet({
                 </span>
                 <Input
                   placeholder="Sem responsável"
-                  className=" bg-[#252323] border-none! rounded-xl ring-0! pr-8 "
+                  className=" bg-[#2C2828] border-none! rounded-xl ring-0! pr-8 "
                   maxLength={42}
                   {...register("assignee")}
                 ></Input>
@@ -178,7 +168,7 @@ export default function EditTaskSheet({
               </span>
               <Textarea
                 placeholder="Adicione a descrição..."
-                className="font-light placeholder:opacity-80  border-none! ring-0! pr-6 bg-[#252323] "
+                className="font-light placeholder:opacity-80  border-none! ring-0! pr-6 bg-[#2C2828] "
                 {...register("description")}
               ></Textarea>
             </span>
@@ -191,16 +181,29 @@ export default function EditTaskSheet({
             )}
           </div>
 
-          <div className=" flex items-center m-4">
+          <div className=" flex items-center m-4 mb-1 flex-col">
             <Button
               disabled={disabled}
               type="submit"
               className={
-                "bg-[#3d2c49] hover:bg-[#2f2238] cursor-pointer transition-all duration-200 rounded-lg w-full py-2"
+                "bg-[#442156] hover:bg-[#48245a] disabled:opacity-30 cursor-pointer transition-all duration-200 rounded-3xl w-full py-2"
               }
             >
               Salvar
             </Button>
+            <ConfirmationModal
+              title="Você deseja apagar essa tarefa?"
+              action={onDelete}
+              description="Essa ação não pode ser desfeita. A tarefa apagada não poderá mais ser restaurada."
+            >
+              <button
+                className={cn(
+                  "cursor-pointer hover:text-red-400 duration-200 text-center  w-full mt-auto h-10 mb-1   text-sm text-[#D56969] transition-all",
+                )}
+              >
+                Apagar tarefa
+              </button>
+            </ConfirmationModal>
           </div>
         </form>
       </SheetContent>

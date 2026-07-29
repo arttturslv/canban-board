@@ -1,15 +1,15 @@
 /** @format */
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import EditTaskSheet from "./Edit-task-sheet";
-import { KanbanHeader } from "./Header";
+import EditTaskSheet from "./edit-task-sheet";
+import { KanbanHeader } from "./header";
 import { map, groupBy, filter } from "lodash";
 import { useKanban } from "../../hooks/use-board";
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
 import { move } from "@dnd-kit/helpers";
-import { TaskItem } from "./Task-item";
+import { TaskItem } from "./task";
 import type { Column as ColumnType, TaskResponse } from "@/db/schemas";
-import { Column } from "./Column";
+import { Column } from "./column";
 import { Plus } from "lucide-react";
 import { useColumnMutation } from "@/hooks/use-column-mutation";
 
@@ -65,7 +65,6 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
   const closeEditTaskSheet = () => {
     setIsSheetOpen(null);
   };
-
 
   const board = useMemo(() => {
     const grouped =
@@ -154,9 +153,9 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
   };
 
   return (
-    <div className="flex flex-col  h-full gap-6 min:px-12 px-4">
+    <div className="flex flex-col h-screen gap-6 min:px-12 px-4">
       <KanbanHeader projectId={projectId} />
-      <div className="flex gap-4 h-full overflow-x-auto w-full mb-4 custom-scroll">
+      <div className="flex-1 min-h-0 flex gap-4 overflow-x-auto w-full mb-4 custom-scroll">
         <DragDropProvider
           onDragStart={onDragStart}
           onDragOver={onDragOver}
@@ -166,7 +165,7 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
             return (
               <Column
                 projectId={projectId}
-
+                index={col.order}
                 key={col.id}
                 taskAction={openTask}
                 id={col.id}
@@ -200,7 +199,7 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
           onClick={() =>
             createColumn.mutate({ column: { projectId, title: "Nova coluna" } })
           }
-          className="flex items-center shrink-0 max-h-12 sm:max-w-[25vw] justify-center gap-1 py-2 border-2 border-dashed w-full rounded-full  border-zinc-200/20  opacity-80 hover:opacity-100 transition-opacity duration-200 cursor-pointer max-sm:w-64"
+          className="flex items-center shrink-0 max-h-12 text-sm sm:max-w-[25vw] justify-center gap-1 py-2 border-[1.5px] border-dashed w-full rounded-full  border-white opacity-30  hover:opacity-50 transition-opacity duration-200 cursor-pointer max-sm:w-64"
         >
           <Plus className="size-4" />
           <span>Adicionar coluna</span>

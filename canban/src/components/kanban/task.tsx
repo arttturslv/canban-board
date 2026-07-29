@@ -1,6 +1,6 @@
 /** @format */
 import { Calendar, MessageCircle, User } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getPriorityColor } from "@/lib/utils";
 import { memo } from "react";
 import { useSortable } from "@dnd-kit/react/sortable";
 
@@ -49,10 +49,8 @@ export const TaskItem = memo(function TaskItem({
       ref={mock ? null : ref}
       onClick={() => action(id)}
       className={cn(
-        "flex gap-3 justify-between  items-stretch  py-3 pr-2 rounded-2xl cursor-pointer hover:opacity-90 transition-all duration-200 border-zinc-100/30",
-        isUrgent
-          ? "bg-linear-to-br from-[#44010154] to-[#211E21]"
-          : "bg-[#211E21]",
+        "flex gap-3 justify-between  items-stretch  py-3 pr-2 cursor-pointer hover:opacity-90 transition-all duration-200 bg-[#201820]  rounded-2xl border-2 border-[#413441]",
+        isUrgent && "bg-linear-to-br from-[#120303] to-[#211E21]",
         isDragging && "opacity-0",
       )}
     >
@@ -67,47 +65,34 @@ export const TaskItem = memo(function TaskItem({
             {title}
           </p>
           {description && (
-            <p className="font-light opacity-90 leading-tight text-ellipsis line-clamp-2">
+            <p className="font-light text-sm opacity-90 leading-tight text-ellipsis line-clamp-2">
               {description}
             </p>
           )}
         </span>
-        <span className="font-light opacity-90 text-sm space-y-1">
-          {assignee && (
-            <p className="flex gap-1 items-center ">
-              <User className="size-4" /> {assignee}
-            </p>
-          )}
-          {dueDate && (
-            <p className="flex gap-1 items-center">
-              <Calendar className="size-4" />{" "}
-              {new Date(dueDate).toLocaleDateString("pt-BR")}
-            </p>
-          )}
+        <span className="font-light opacity-90 text-xs space-y-1">
           <span className="flex gap-2">
-            {!!commentsCount && (
-              <p className="flex gap-1 items-center">
-                <MessageCircle className="size-4" /> {commentsCount}
+            {assignee && (
+              <p className="flex gap-0.5 items-center ">
+                <User className="size-3" /> {assignee}
+              </p>
+            )}
+
+            {commentsCount && (
+              <p className="flex gap-0.5 items-center ">
+                <MessageCircle className="size-3" /> {1}
               </p>
             )}
           </span>
+
+          {dueDate && (
+            <p className="flex gap-1 items-center">
+              <Calendar className="size-3" />{" "}
+              {new Date(dueDate).toLocaleDateString("pt-BR")}
+            </p>
+          )}
         </span>
       </div>
     </div>
   );
 });
-
-const getPriorityColor = (priority: string) => {
-  switch (priority) {
-    case "low":
-      return "bg-blue-300";
-    case "medium":
-      return "bg-yellow-300";
-    case "high":
-      return "bg-red-300";
-    case "urgent":
-      return "bg-red-600";
-    default:
-      return "bg-white-300";
-  }
-};
