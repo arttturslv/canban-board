@@ -63,6 +63,7 @@ export default function EditTaskSheet({
       id: taskId,
       updates: {
         ...data,
+        tags: data.tag ? [data.tag] : [],
         priority: (data.priority || "low") as priority,
       },
     });
@@ -197,7 +198,7 @@ export default function EditTaskSheet({
             >
               <button
                 className={cn(
-                  "cursor-pointer hover:text-red-400 duration-200 text-center w-full mt-auto h-10 mb-1   text-sm text-[#D56969] transition-all",
+                  "cursor-pointer hover:text-red-400 duration-200 text-center  w-full mt-auto h-10 mb-1   text-sm text-[#D56969] transition-all",
                 )}
               >
                 Apagar tarefa

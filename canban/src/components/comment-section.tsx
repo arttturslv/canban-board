@@ -41,7 +41,7 @@ export const CommentsSection = ({
   };
 
   return (
-    <span className="flex gap-2 flex-col">
+    <span className="flex gap-2 flex-col opacity-30 cursor-not-allowed">
       <span className="flex text-sm font-medium items-center">Comentários</span>
 
       <div className="flex flex-col w-full ">
@@ -96,6 +96,7 @@ export const CommentsSection = ({
           </AvatarFallback>
         </Avatar>
         <Textarea
+          disabled
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="Adicione um comentário..."
