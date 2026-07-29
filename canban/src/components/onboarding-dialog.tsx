@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { DatePicker } from "./date-picker";
 import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { Upload } from "lucide-react";
+import { StorageService } from "@/db/services/storage.service";
 
 interface onboardingForm {
   name: string;
@@ -36,36 +37,55 @@ export function OnboardingModal({
   const setProfile = useAuthStore((s) => s.setProfile);
 
   const onSubmit: SubmitHandler<onboardingForm> = async (data) => {
-    console.log("user", user);
-
     if (!user) return;
+
+    const file = data.avatarFile?.[0];
+    let avatarUrl: string | null = null;
+
+    if (file) {
+      // 2. Chama o serviço e desestrutura { publicUrl, error }
+      const { publicUrl, error: uploadError } =
+        await StorageService.compressAndStoreImage({
+          bucket: "pictures",
+          file,
+          userId: user.id,
+        });
+
+      // 3. Lança o erro se o upload falhar
+      if (uploadError || !publicUrl) {
+        throw new Error(
+          `Falha ao enviar a foto de perfil: ${uploadError || "URL pública não gerada"}`,
+        );
+      }
+
+      avatarUrl = publicUrl;
+    }
 
     const profile: ProfileInput = {
       id: user.id,
       name: data.name!,
       email: user.email!,
-      avatarFile: data.avatarFile,
+      avatarUrl: avatarUrl,
       bornDate: data.bornDate,
       provider: "magiclink",
-      createdAt: new Date().toISOString(),
     };
 
     const profileSettings: ProfileSettings = {
       userId: user.id,
-      theme: "dark",
+      themeDark: true,
       language: "pt-BR",
       notificationsEnabled: true,
     };
 
-    const { error } = await AuthService.onboardUser({
+    const { data: profileUser, error } = await AuthService.onboardUser({
       profile,
       profileSettings,
     });
 
-    if (error) {
+    if (error && !profileUser) {
       console.error(error);
     } else {
-      setProfile(profile);
+      setProfile(profileUser);
       onSuccess();
     }
   };
@@ -108,7 +128,7 @@ export function OnboardingModal({
               oferecer uma experiência mais customizada.{" "}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <FieldGroup className="gap-3">
+          <FieldGroup className="gap-3 mt-4">
             <Field className="gap-2 flex items-center justify-center w-full ">
               <span className="text-xs opacity-45 text-center">
                 Imagem de perfil
@@ -135,7 +155,7 @@ export function OnboardingModal({
               <input
                 id="avatar-upload"
                 type="file"
-                accept="image/png, image/jpeg, image/jpg"
+                accept="image/png, image/jpeg, .png, .jpg, .jpeg"
                 className="hidden"
                 {...register("avatarFile")}
               />

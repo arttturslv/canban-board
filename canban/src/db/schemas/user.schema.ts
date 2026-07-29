@@ -9,15 +9,24 @@ export interface Profile {
   avatarUrl: string | null;
   provider: AuthProviderType;
   createdAt: string;
+  updatedAt: string;
 }
-
-export type ProfileInput = Omit<Profile, "avatarUrl"> & {
-  avatarFile?: FileList;
-};
 
 export interface ProfileSettings {
   userId: string;
-  theme: "dark" | "light";
+  themeDark: boolean;
   language: "pt-BR" | "en-US";
   notificationsEnabled: boolean;
 }
+
+export type ProfileUser = Profile & {
+  system?: Omit<ProfileSettings, "userId">;
+};
+
+export type ProfileUpdate = Omit<
+  Profile,
+  "provider" | "createdAt" | "email" | "createdAt" | "updatedAt" | "id"
+> &
+  Omit<ProfileSettings, "userId">;
+
+export type ProfileInput = Omit<Profile, "createdAt" | "updatedAt">;

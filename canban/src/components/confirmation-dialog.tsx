@@ -37,7 +37,7 @@ export function ConfirmationModal({
   return (
     <AlertDialog>
       <AlertDialogTrigger className={"ring-0! border-0!"} render={children} />
-      <AlertDialogOverlay className="backdrop-blur-sm bg-[black/50]" />
+      <AlertDialogOverlay className="backdrop-blur-sm bg-[black/50] z-999" />
       <AlertDialogContent
         className={
           "bg-[#211E21] flex flex-col gap-3 pb-5 text-white border-0! ring-0!"

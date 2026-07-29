@@ -14,6 +14,7 @@ import { debounce } from "lodash";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAuthStore } from "@/store/use-auth-store";
 import { useRouter } from "@tanstack/react-router";
+import { ProfileModal } from "../profile-dialog";
 
 export const KanbanHeader = ({ projectId }: { projectId: string }) => {
   const { updateProject, useProject } = useProjectsMutation();
@@ -99,13 +100,11 @@ export const KanbanHeader = ({ projectId }: { projectId: string }) => {
             <Bell className="size-4" />
           </button>
 
-          <button
-            onClick={openFilterSheet}
-            className="p-0! m-0! size-8  text-sm  flex text-gray-200 items-center justify-center hover:opacity-80 transition-opacity bg-gray-500/30 rounded-full duration-200 cursor-pointer"
-          >
-            <EllipsisVertical className="size-4" />
-          </button>
-
+          <ProfileModal>
+            <button className="p-0! m-0! size-8  text-sm  flex text-gray-200 items-center justify-center hover:opacity-80 transition-opacity bg-gray-500/30 rounded-full duration-200 cursor-pointer">
+              <EllipsisVertical className="size-4" />
+            </button>
+          </ProfileModal>
           <button
             onClick={logout}
             className="p-0! m-0! size-8  text-sm  flex text-gray-200 items-center justify-center hover:contrast-125 transition-opacity bg-[#7B2EA8]/40 rounded-full duration-200 cursor-pointer"
