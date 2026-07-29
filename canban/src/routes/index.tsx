@@ -255,7 +255,7 @@ function KanbanMockup() {
         boxShadow:
           "0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04)",
       }}
-      src="https://i.imgur.com/SSpUlCZ.png"
+      src="/preview.webp"
     />
   );
 }
