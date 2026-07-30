@@ -51,11 +51,16 @@ export const AuthService = {
   },
 
   async signInWithEmail({ email }: { email: string }) {
+    const origin =
+      typeof window !== "undefined"
+        ? window.location.origin
+        : "https://canban.artttur.com";
+
     const { data, error } = await supabase.auth.signInWithOtp({
       email: email,
       options: {
         shouldCreateUser: true,
-        emailRedirectTo: "https://example.com/welcome",
+        emailRedirectTo: `${origin}/kanban`,
       },
     });
 

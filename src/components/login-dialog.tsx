@@ -38,7 +38,9 @@ export function LoginDialog({ isLogged }: { isLogged: boolean }) {
   };
 
   const goBack = async () => {
-    router.history.back();
+    router.navigate({
+      to: "/",
+    });
   };
 
   return (
@@ -70,7 +72,6 @@ export function LoginDialog({ isLogged }: { isLogged: boolean }) {
                     onChange={(e) => setEmail(e.target.value)}
                     id="email"
                     name="email"
-                    defaultValue="pedrodu@gmail.com"
                   />
                 </Field>
               </FieldGroup>
