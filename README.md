@@ -16,6 +16,7 @@ Este projeto foi desenvolvido visando aprender mais sobre Tanstack Query, Supaba
 
 
 <h3>Features a serem implementadas: </h3>
+• Personalizar o e-mail de login com um servidor SMTP próprio<br>
 • Adicionar salvamento em nuvem<br>
 • Adicionar compartilhamento de kanbans<br>
 • Adicionar comentários em tarefas<br>
