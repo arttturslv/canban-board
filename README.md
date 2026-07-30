@@ -1,32 +1,41 @@
-# React + TypeScript + Vite
+<h1>Canban</h1> 
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+![screenshot](https://i.imgur.com/9H0MYMQ.png)
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+<h3>Informações do projeto: </h3>
+Este projeto foi desenvolvido visando aprender mais sobre Tanstack Query, Supabase e Dexie.
 
-## React Compiler
+<h3>Features: </h3>
+• Permite logar via MagicLink (Envio de e-mail com links de login, sem necessidade de senhas)<br>
+• Permite criar tarefas como nomes, descrições, data e tags<br>
+• Permite criar e apagar colunas<br>
+• Permite editar o perfil<br>
+• Salva informações utilizando o banco de dados local (IndexedDB)<br>
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Expanding the Oxlint configuration
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+<h3>Features a serem implementadas: </h3>
+• Adicionar salvamento em nuvem<br>
+• Adicionar compartilhamento de kanbans<br>
+• Adicionar comentários em tarefas<br>
+• Adicionar notificações<br>
+• Adicionar exportação de dados<br>
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+<h3>Status: </h3> 
+• Em andamento<br>
+
+
+<h3> Tecnologias Utilizadas</h3> 
+• React <br>
+• TypeScript <br>
+• TailwindCSS <br>
+• Tanstack Router<br>
+• Tanstack Query<br>
+• Shadcn <br>
+• Dexie<br>
+• Vercel <br>
+
+<h3> Configuração e Execução</h3>
+Para utilizar o projeto, basta acessar: https://canban.artttur.com/
