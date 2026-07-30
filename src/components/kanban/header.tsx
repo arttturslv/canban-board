@@ -86,16 +86,19 @@ export const KanbanHeader = ({ projectId }: { projectId: string }) => {
         </span>
         <div className="flex gap-2 max-sm:justify-end">
           <button
+            disabled
             onClick={openFilterSheet}
-            className="max-sm:p-0! max-sm:size-8 px-3  h-8    flex text-sm border-px  text-purple-200 items-center justify-center gap-1 hover:contrast-125 transition-opacity bg-[#7B2EA8]/40 rounded-full duration-200 cursor-pointer"
+            className="max-sm:p-0! max-sm:size-8 px-3  disabled:opacity-30 disabled:cursor-not-allowed h-8    flex text-sm border-px  text-purple-200 items-center justify-center gap-1 hover:contrast-125 transition-opacity bg-[#7B2EA8]/40 rounded-full duration-200 cursor-pointer"
           >
             <span className="max-sm:hidden">Compartilhar</span>
             <Share2 className="size-4" />
           </button>
 
           <button
+            disabled
+
             onClick={openFilterSheet}
-            className="p-0! m-0! size-8  text-sm  flex text-gray-200 items-center justify-center hover:opacity-80 transition-opacity bg-gray-500/30 rounded-full duration-200 cursor-pointer"
+            className="p-0! m-0! size-8  text-sm  disabled:opacity-30 disabled:cursor-not-allowed flex text-gray-200 items-center justify-center hover:opacity-80 transition-opacity bg-gray-500/30 rounded-full duration-200 cursor-pointer"
           >
             <Bell className="size-4" />
           </button>
