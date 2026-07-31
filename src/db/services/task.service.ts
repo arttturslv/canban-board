@@ -4,7 +4,6 @@ import { supabase } from "@/lib/supabase";
 import type {
   Task,
   TaskInput,
-  TaskInsert,
   TaskResponse,
   TaskUpdate,
   updateTaskBatchInput,
@@ -111,13 +110,16 @@ export const TaskService = {
 
     if (updates.title !== undefined) payload.title = updates.title;
     if (updates.description !== undefined)
-      payload.description = updates.description;
+      payload.description = updates.description || null;
     if (updates.priority !== undefined) payload.priority = updates.priority;
     if (updates.tags !== undefined) payload.tags = updates.tags;
-    if (updates.assignee !== undefined) payload.assignee = updates.assignee;
-    if (updates.due_date !== undefined) payload.due_date = updates.due_date;
-    if (updates.column_id !== undefined) payload.column_id = updates.column_id;
     if (updates.order !== undefined) payload.order = updates.order;
+    if (updates.column_id !== undefined) payload.column_id = updates.column_id;
+
+    if (updates.assignee !== undefined)
+      payload.assignee = updates.assignee || null;
+    if (updates.due_date !== undefined)
+      payload.due_date = updates.due_date || null;
 
     const { data, error } = await supabase
       .from("tasks")
@@ -131,23 +133,30 @@ export const TaskService = {
   },
 
   async updateTaskBatch(batch: updateTaskBatchInput) {
-    const updates = batch.map(({ id, updates }) => ({
-      id,
-      updated_at: new Date().toISOString(),
-      ...(updates.column_id !== undefined && { column_id: updates.column_id }),
-      ...(updates.order !== undefined && { order: updates.order }),
-      ...(updates.title !== undefined && { title: updates.title }),
-      ...(updates.priority !== undefined && { priority: updates.priority }),
-      ...(updates.assignee !== undefined && { assignee: updates.assignee }),
-    }));
+    const updatePromises = batch.map(({ id, updates }) => {
+      const payload: TaskUpdate = {
+        updated_at: new Date().toISOString(),
+        ...(updates.project_id !== undefined && {
+          project_id: updates.project_id,
+        }),
+        ...(updates.column_id !== undefined && {
+          column_id: updates.column_id,
+        }),
+        ...(updates.order !== undefined && { order: updates.order }),
+        ...(updates.title !== undefined && { title: updates.title }),
+        ...(updates.priority !== undefined && { priority: updates.priority }),
+        ...(updates.assignee !== undefined && { assignee: updates.assignee }),
+      };
 
-    const { data, error } = await supabase
-      .from("tasks")
-      .upsert(updates as TaskInsert[])
-      .select();
+      return supabase.from("tasks").update(payload).eq("id", id).select();
+    });
 
+    const results = await Promise.all(updatePromises);
+
+    const error = results.find((r) => r.error)?.error;
     if (error) throw error;
-    return data;
+
+    return results.flatMap((r) => r.data);
   },
 
   async deleteTask(id: string, user_id?: string) {

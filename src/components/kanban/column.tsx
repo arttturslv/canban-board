@@ -117,7 +117,7 @@ export const Column = memo(function Column({
           project_id={project_id}
           isOpen={showNewTask}
           onClose={() => setShowNewTask(false)}
-          onSave={() => createTask.mutate}
+          onSave={(taskData) => createTask.mutate({ task: taskData })}
         />
 
         {!showNewTask && (

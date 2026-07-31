@@ -3,7 +3,6 @@ import { Save } from "lucide-react";
 import { cn, getPriorityColor, priorities, tags } from "@/lib/utils";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import type { UseMutateFunction } from "@tanstack/react-query";
 import { useForm, type SubmitHandler } from "react-hook-form";
 
 import { Button } from "../ui/button";
@@ -16,19 +15,12 @@ interface NewTaskProps {
   column_id: string;
   isOpen: boolean;
   onClose: () => void;
-  onSave: UseMutateFunction<
-    void,
-    Error,
-    {
-      task: TaskInput;
-    },
-    unknown
-  >;
+  onSave: (task: TaskInput) => void;
 }
 
 interface newTaskForm {
   title: string;
-  tags?: string;
+  tags?: string[];
   priority?: priority;
   description?: string;
 }
@@ -51,7 +43,7 @@ export default function NewTask({
     defaultValues: {
       title: "",
       description: "",
-      tags: "",
+      tags: [],
       priority: "low",
     },
   });
@@ -63,17 +55,15 @@ export default function NewTask({
 
   const savingTask: SubmitHandler<newTaskForm> = (data) => {
     onSave({
-      task: {
-        tags: data.tags ? [data.tags] : [],
-        column_id: column_id,
-        project_id: project_id,
-        title: data.title,
-        description: data.description || null,
-        priority: data.priority || "low",
-        assignee: null,
-        due_date: null,
-        order: undefined,
-      },
+      tags: data.tags || [],
+      column_id: column_id,
+      project_id: project_id,
+      title: data.title,
+      description: data.description || null,
+      priority: data.priority || "low",
+      assignee: null,
+      due_date: null,
+      order: undefined,
     });
     reset();
     onClose();
@@ -128,6 +118,7 @@ export default function NewTask({
               controlName="tags"
               control={control}
               icon={null}
+              isMulti={true}
             />
             <ComboboxSelection
               array={priorities}
