@@ -126,6 +126,7 @@ export default function EditTaskSheet({
                   array={tags}
                   controlName="tags"
                   control={control}
+                  isMulti={true}
                   type="constrast"
                 />
               </span>
@@ -134,7 +135,9 @@ export default function EditTaskSheet({
                 <span className="flex gap-1 items-center ">
                   <CalendarIcon className="size-4" /> Data
                 </span>
-                <DatePicker control={control} controlName={"due_date"} />
+                <span>
+                  <DatePicker control={control} controlName={"due_date"} />
+                </span>
               </span>
 
               <span className="flex gap-2 flex-col">

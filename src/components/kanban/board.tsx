@@ -125,7 +125,7 @@ export default function KanbanBoard({ project_id }: { project_id: string }) {
     const dbTaskMap = new Map(tasks.map((t) => [t.id, t]));
     const batchUpdates: {
       id: string;
-      updates: { order: number; column_id: string };
+      updates: { order: number; column_id: string; project_id: string };
     }[] = [];
 
     finalTasks.forEach((finalTask) => {
@@ -138,6 +138,7 @@ export default function KanbanBoard({ project_id }: { project_id: string }) {
         batchUpdates.push({
           id: finalTask.id,
           updates: {
+            project_id: project_id,
             column_id: finalTask.column_id,
             order: finalTask.order,
           },

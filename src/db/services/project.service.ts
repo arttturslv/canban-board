@@ -47,8 +47,6 @@ export const ProjectService = {
       .select("*, project_members!inner(user_id)")
       .order("created_at", { ascending: false });
 
-    console.log({ data });
-
     if (error) {
       console.error("Erro ao buscar projetos do usuário:", error);
       throw error;
