@@ -23,7 +23,7 @@ import type { priority, taskForm } from "@/db/schemas";
 import { useAuthStore } from "@/store/use-auth-store";
 import { CommentsSection } from "../comment-section";
 interface EditTaskSheetProps {
-  projectId: string;
+  project_id: string;
   taskId: string | null;
   open: boolean;
   onClose: () => void;
@@ -33,9 +33,9 @@ export default function EditTaskSheet({
   onClose,
   open,
   taskId,
-  projectId,
+  project_id,
 }: EditTaskSheetProps) {
-  const { updateTask, deleteTask, useTask } = useTaskMutations(projectId);
+  const { updateTask, deleteTask, useTask } = useTaskMutations(project_id);
   const { data: taskFound } = useTask(taskId);
 
   const {
@@ -47,9 +47,9 @@ export default function EditTaskSheet({
     values: {
       title: taskFound?.title ?? "",
       assignee: taskFound?.assignee ?? "",
-      dueDate: taskFound?.dueDate ?? "",
-      priority: taskFound?.priority ?? "",
-      tag: taskFound?.tags[0] ?? "",
+      due_date: taskFound?.due_date ?? "",
+      priority: taskFound?.priority ?? "low",
+      tags: taskFound?.tags ?? [],
       description: taskFound?.description ?? "",
     },
   });
@@ -63,7 +63,7 @@ export default function EditTaskSheet({
       id: taskId,
       updates: {
         ...data,
-        tags: data.tag ? [data.tag] : [],
+        tags: data.tags ? data.tags : [],
         priority: (data.priority || "low") as priority,
       },
     });
@@ -124,7 +124,7 @@ export default function EditTaskSheet({
                 </span>
                 <ComboboxSelection
                   array={tags}
-                  controlName="tag"
+                  controlName="tags"
                   control={control}
                   type="constrast"
                 />
@@ -134,7 +134,7 @@ export default function EditTaskSheet({
                 <span className="flex gap-1 items-center ">
                   <CalendarIcon className="size-4" /> Data
                 </span>
-                <DatePicker control={control} controlName={"dueDate"} />
+                <DatePicker control={control} controlName={"due_date"} />
               </span>
 
               <span className="flex gap-2 flex-col">
@@ -172,13 +172,7 @@ export default function EditTaskSheet({
                 {...register("description")}
               ></Textarea>
             </span>
-            {user && taskId && profile && (
-              <CommentsSection
-                user={profile}
-                projectId={projectId}
-                taskId={taskId}
-              />
-            )}
+            {user && taskId && profile && <CommentsSection />}
           </div>
 
           <div className=" flex items-center m-4 mb-1 flex-col">

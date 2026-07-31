@@ -11,7 +11,7 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { ProfileInput, ProfileSettings } from "@/db/schemas";
+import type { ProfileUpdate } from "@/db/schemas";
 import { AuthService } from "@/db/services/auth.service";
 import { useAuthStore } from "@/store/use-auth-store";
 import { useEffect, useState } from "react";
@@ -22,7 +22,7 @@ import { StorageService } from "@/db/services/storage.service";
 
 interface onboardingForm {
   name: string;
-  bornDate?: string;
+  born_date?: string;
   avatarFile?: FileList;
 }
 
@@ -40,7 +40,7 @@ export function OnboardingModal({
     if (!user) return;
 
     const file = data.avatarFile?.[0];
-    let avatarUrl: string | null = null;
+    let avatar_url: string | null = null;
 
     if (file) {
       // 2. Chama o serviço e desestrutura { publicUrl, error }
@@ -48,7 +48,7 @@ export function OnboardingModal({
         await StorageService.compressAndStoreImage({
           bucket: "pictures",
           file,
-          userId: user.id,
+          user_id: user.id,
         });
 
       // 3. Lança o erro se o upload falhar
@@ -58,28 +58,21 @@ export function OnboardingModal({
         );
       }
 
-      avatarUrl = publicUrl;
+      avatar_url = publicUrl;
     }
 
-    const profile: ProfileInput = {
-      id: user.id,
-      name: data.name!,
-      email: user.email!,
-      avatarUrl: avatarUrl,
-      bornDate: data.bornDate,
-      provider: "magiclink",
+    const profileUpdate: ProfileUpdate = {
+      name: data.name,
+      avatar_url,
+      born_date: data.born_date || null,
+      theme_dark: true,
+      language: "pt-BR" as const,
+      notifications_enabled: false,
     };
 
-    const profileSettings: ProfileSettings = {
-      userId: user.id,
-      themeDark: true,
-      language: "pt-BR",
-      notificationsEnabled: true,
-    };
-
-    const { data: profileUser, error } = await AuthService.onboardUser({
-      profile,
-      profileSettings,
+    const { data: profileUser, error } = await AuthService.updateUser({
+      user_id: user.id,
+      profile: profileUpdate,
     });
 
     if (error && !profileUser) {
@@ -98,7 +91,7 @@ export function OnboardingModal({
   } = useForm<onboardingForm>({
     values: {
       name: "",
-      bornDate: "",
+      born_date: "",
       avatarFile: undefined,
     },
   });
@@ -184,10 +177,10 @@ export function OnboardingModal({
             </Field>
 
             <Field className="gap-2">
-              <Label className="font-light text-sm" htmlFor="bornDate">
+              <Label className="font-light text-sm" htmlFor="born_date">
                 Data de Nascimento
               </Label>{" "}
-              <DatePicker control={control} controlName={"bornDate"} />
+              <DatePicker control={control} controlName={"born_date"} />
             </Field>
           </FieldGroup>
           <AlertDialogFooter>

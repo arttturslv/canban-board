@@ -16,9 +16,9 @@ import { useAuthStore } from "@/store/use-auth-store";
 import { useRouter } from "@tanstack/react-router";
 import { ProfileModal } from "../profile-dialog";
 
-export const KanbanHeader = ({ projectId }: { projectId: string }) => {
+export const KanbanHeader = ({ project_id }: { project_id: string }) => {
   const { updateProject, useProject } = useProjectsMutation();
-  const { data: project } = useProject(projectId);
+  const { data: project } = useProject(project_id);
   const router = useRouter();
 
   const [localName, setLocalName] = useState(project?.name || "Kanban Board");
@@ -34,8 +34,8 @@ export const KanbanHeader = ({ projectId }: { projectId: string }) => {
   };
 
   const debouncedUpdate = useMemo(() => {
-    return debounce((newName: string, projectId: string) => {
-      updateProject.mutate({ id: projectId, updates: { name: newName } });
+    return debounce((newName: string, project_id: string) => {
+      updateProject.mutate({ id: project_id, updates: { name: newName } });
     }, 700);
   }, [updateProject]);
 
@@ -43,9 +43,9 @@ export const KanbanHeader = ({ projectId }: { projectId: string }) => {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       setLocalName(value);
-      debouncedUpdate(value, projectId);
+      debouncedUpdate(value, project_id);
     },
-    [projectId],
+    [project_id],
   );
 
   const minLength = 8;

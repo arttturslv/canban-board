@@ -12,8 +12,8 @@ import type { priority, TaskInput } from "@/db/schemas";
 import ComboboxSelection from "../combobox-selection";
 
 interface NewTaskProps {
-  projectId: string;
-  columnId: string;
+  project_id: string;
+  column_id: string;
   isOpen: boolean;
   onClose: () => void;
   onSave: UseMutateFunction<
@@ -37,8 +37,8 @@ export default function NewTask({
   isOpen,
   onClose,
   onSave,
-  columnId,
-  projectId,
+  column_id,
+  project_id,
 }: NewTaskProps) {
   const {
     register,
@@ -64,11 +64,15 @@ export default function NewTask({
   const savingTask: SubmitHandler<newTaskForm> = (data) => {
     onSave({
       task: {
-        ...data,
         tags: data.tags ? [data.tags] : [],
-        columnId: columnId,
-        projectId: projectId,
-        createdBy: "artur",
+        column_id: column_id,
+        project_id: project_id,
+        title: data.title,
+        description: data.description || null,
+        priority: data.priority || "low",
+        assignee: null,
+        due_date: null,
+        order: undefined,
       },
     });
     reset();

@@ -8,14 +8,14 @@ import { toast } from "sonner";
 export function useColumnMutation() {
   const queryClient = useQueryClient();
 
-  const useColumn = (columnId: string | null) => {
+  const useColumn = (column_id: string | null) => {
     return useQuery({
-      queryKey: ["column", columnId],
+      queryKey: ["column", column_id],
       queryFn: () => {
-        return ColumnService.getColumnById(columnId!);
+        return ColumnService.getColumnById(column_id!);
       },
 
-      enabled: !!columnId,
+      enabled: !!column_id,
     });
   };
 

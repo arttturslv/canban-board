@@ -13,7 +13,7 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { Profile, ProfileSettings, ProfileUser } from "@/db/schemas";
+import type { ProfileUpdate, ProfileUser } from "@/db/schemas";
 import { useAuthStore } from "@/store/use-auth-store";
 import {
   type JSXElementConstructor,
@@ -36,7 +36,7 @@ import { toast } from "sonner";
 
 type ProfileModalForm = Omit<
   ProfileUser,
-  "id" | "createdAt" | "provider" | "updatedAt"
+  "id" | "created_at" | "provider" | "updated_at"
 > & {
   avatarFile?: FileList;
 };
@@ -60,14 +60,14 @@ export function ProfileModal({
     formState: { errors, isSubmitting },
   } = useForm<ProfileModalForm>({
     values: {
-      avatarUrl: profile?.avatarUrl || null,
+      avatar_url: profile?.avatar_url || null,
       email: profile?.email || user?.email || "",
       name: profile?.name || "",
-      bornDate: profile?.bornDate,
+      born_date: profile?.born_date || null,
       system: {
         language: profile?.system?.language || "pt-BR",
-        themeDark: !!profile?.system?.themeDark,
-        notificationsEnabled: !!profile?.system?.notificationsEnabled,
+        theme_dark: !!profile?.system?.theme_dark,
+        notifications_enabled: !!profile?.system?.notifications_enabled,
       },
     },
   });
@@ -77,14 +77,14 @@ export function ProfileModal({
     if (avatarFileList && avatarFileList.length > 0) {
       return URL.createObjectURL(avatarFileList[0]);
     }
-    return profile?.avatarUrl || null;
-  }, [avatarFileList, profile?.avatarUrl]);
+    return profile?.avatar_url || null;
+  }, [avatarFileList, profile?.avatar_url]);
 
   const onSubmit: SubmitHandler<ProfileModalForm> = async (data) => {
     if (!user) return;
 
     try {
-      let avatarUrl = profile?.avatarUrl || null;
+      let avatar_url = profile?.avatar_url || null;
       const file = data.avatarFile?.[0];
 
       if (file) {
@@ -92,7 +92,7 @@ export function ProfileModal({
           await StorageService.compressAndStoreImage({
             bucket: "pictures",
             file,
-            userId: user.id,
+            user_id: user.id,
           });
 
         if (uploadError || !publicUrl) {
@@ -101,30 +101,21 @@ export function ProfileModal({
           );
         }
 
-        avatarUrl = publicUrl || null;
+        avatar_url = publicUrl || null;
       }
 
-      const updatedProfile: Profile = {
-        id: user.id,
+      const profileUpdate: ProfileUpdate = {
         name: data.name,
-        email: user.email!,
-        avatarUrl,
-        bornDate: data.bornDate,
-        provider: "magiclink" as const,
-        createdAt: profile?.createdAt || new Date().toISOString(),
-        updatedAt: profile?.createdAt || new Date().toISOString(),
-      };
-
-      const profileSettings: ProfileSettings = {
-        userId: user.id,
-        themeDark: !!data.system?.themeDark,
+        avatar_url,
+        born_date: data.born_date,
+        theme_dark: !!data.system?.theme_dark,
         language: "pt-BR" as const,
-        notificationsEnabled: false,
+        notifications_enabled: false,
       };
 
-      const { data: profileUser, error } = await AuthService.onboardUser({
-        profile: updatedProfile,
-        profileSettings,
+      const { data: profileUser, error } = await AuthService.updateUser({
+        user_id: user.id,
+        profile: profileUpdate,
       });
 
       if (error && !profileUser) {
@@ -226,10 +217,10 @@ export function ProfileModal({
             </Field>
 
             <Field className="gap-2">
-              <Label className="font-light text-sm" htmlFor="bornDate">
+              <Label className="font-light text-sm" htmlFor="born_date">
                 Data de Nascimento
               </Label>
-              <DatePicker control={control} controlName={"bornDate"} />
+              <DatePicker control={control} controlName={"born_date"} />
             </Field>
 
             <Field className="flex flex-row items-center justify-between w-full opacity-30">
@@ -237,7 +228,7 @@ export function ProfileModal({
                 Modo noturno
               </Label>
               <Controller
-                name="system.themeDark"
+                name="system.theme_dark"
                 control={control}
                 render={({ field }) => (
                   <Switch
@@ -260,7 +251,7 @@ export function ProfileModal({
                 Habilitar notificações
               </Label>
               <Controller
-                name="system.notificationsEnabled"
+                name="system.notifications_enabled"
                 control={control}
                 render={({ field }) => (
                   <Switch
