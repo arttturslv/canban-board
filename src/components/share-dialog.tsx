@@ -27,9 +27,11 @@ interface shareForm {
 
 export function ShareModal({
   projectId,
+  onClose,
   show,
 }: {
   projectId: string;
+  onClose: () => void;
   show: boolean;
 }) {
   const { user } = useAuthStore();
@@ -71,7 +73,7 @@ export function ShareModal({
   };
 
   return (
-    <Dialog open={show}>
+    <Dialog open={show} onOpenChange={onClose}>
       <DialogContent className="w-[50vw]! max-w-none! bg-[#211E21] ring-0 text-white gap-3">
         <form className="" onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>

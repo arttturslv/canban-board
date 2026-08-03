@@ -109,7 +109,11 @@ export const KanbanHeader = ({ project_id }: { project_id: string }) => {
               <EllipsisVertical className="size-4" />
             </button>
           </ProfileModal>
-          <ShareModal projectId={project_id} show={showShared} />
+          <ShareModal
+            projectId={project_id}
+            show={showShared}
+            onClose={() => setShowShared(false)}
+          />
           <button
             onClick={logout}
             className="p-0! m-0! size-8  text-sm  flex text-gray-200 items-center justify-center hover:contrast-125 transition-opacity bg-[#7B2EA8]/40 rounded-full duration-200 cursor-pointer"
