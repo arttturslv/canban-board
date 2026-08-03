@@ -78,3 +78,19 @@ export type CommentAgregated = Comment & {
     name: string | null;
   };
 };
+
+export type ProjectMemberRole =
+  Database["public"]["Enums"]["user_role"] | "owner" | "editor" | "viewer";
+
+export interface ProjectMemberDetail {
+  id: string; // ID da tabela project_members
+  userId: string;
+  projectId: string;
+  role: string;
+  joinedAt: string;
+  user: {
+    name: string | null;
+    email: string | null;
+    avatarUrl?: string | null;
+  };
+}

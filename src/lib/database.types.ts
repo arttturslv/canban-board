@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       columns: {
@@ -214,7 +239,9 @@ export type Database = {
           description: string | null
           id: string
           is_public: boolean
+          is_share_enabled: boolean | null
           name: string
+          share_token: string | null
           updated_at: string
         }
         Insert: {
@@ -222,7 +249,9 @@ export type Database = {
           description?: string | null
           id?: string
           is_public?: boolean
+          is_share_enabled?: boolean | null
           name: string
+          share_token?: string | null
           updated_at?: string
         }
         Update: {
@@ -230,7 +259,9 @@ export type Database = {
           description?: string | null
           id?: string
           is_public?: boolean
+          is_share_enabled?: boolean | null
           name?: string
+          share_token?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -340,10 +371,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_project_member_by_email: {
+        Args: { p_email: string; p_project_id: string; p_role?: string }
+        Returns: Json
+      }
+      get_user_id_by_email: {
+        Args: { email_input: string }
+        Returns: {
+          email: string
+          id: string
+          name: string
+        }[]
+      }
       get_user_role: {
         Args: { p_project_id: string }
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      is_project_owner: { Args: { p_project_id: string }; Returns: boolean }
+      join_project_via_token: { Args: { token_input: string }; Returns: string }
     }
     Enums: {
       task_priority: "low" | "medium" | "high" | "urgent"
@@ -473,6 +518,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       task_priority: ["low", "medium", "high", "urgent"],

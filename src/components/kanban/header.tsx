@@ -15,6 +15,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAuthStore } from "@/store/use-auth-store";
 import { useRouter } from "@tanstack/react-router";
 import { ProfileModal } from "../profile-dialog";
+import { ShareModal } from "../share-dialog";
 
 export const KanbanHeader = ({ project_id }: { project_id: string }) => {
   const { updateProject, useProject } = useProjectsMutation();
@@ -22,6 +23,7 @@ export const KanbanHeader = ({ project_id }: { project_id: string }) => {
   const router = useRouter();
 
   const [localName, setLocalName] = useState(project?.name || "Kanban Board");
+  const [showShared, setShowShared] = useState(false);
 
   useEffect(() => {
     if (project?.name) {
@@ -86,8 +88,7 @@ export const KanbanHeader = ({ project_id }: { project_id: string }) => {
         </span>
         <div className="flex gap-2 max-sm:justify-end">
           <button
-            disabled
-            onClick={openFilterSheet}
+            onClick={() => setShowShared(true)}
             className="max-sm:p-0! max-sm:size-8 px-3  disabled:opacity-30 disabled:cursor-not-allowed h-8    flex text-sm border-px  text-purple-200 items-center justify-center gap-1 hover:contrast-125 transition-opacity bg-[#7B2EA8]/40 rounded-full duration-200 cursor-pointer"
           >
             <span className="max-sm:hidden">Compartilhar</span>
@@ -108,6 +109,7 @@ export const KanbanHeader = ({ project_id }: { project_id: string }) => {
               <EllipsisVertical className="size-4" />
             </button>
           </ProfileModal>
+          <ShareModal projectId={project_id} show={showShared} />
           <button
             onClick={logout}
             className="p-0! m-0! size-8  text-sm  flex text-gray-200 items-center justify-center hover:contrast-125 transition-opacity bg-[#7B2EA8]/40 rounded-full duration-200 cursor-pointer"

@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import type { User } from "@supabase/supabase-js";
 
 interface MyRouterContext {
-  user: User | null
+  user: User | null;
 }
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: RootComponent,
@@ -14,7 +14,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 function RootComponent() {
   return (
     <>
-      <Toaster />
+      <Toaster className="bg-[#211E21]! text-white" />
       <Outlet />
     </>
   );

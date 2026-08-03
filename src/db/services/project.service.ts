@@ -31,6 +31,8 @@ export const ProjectService = {
       is_public: data.is_public,
       created_at: data.created_at,
       updated_at: data.updated_at,
+      is_share_enabled: data.is_share_enabled || false,
+      share_token: data.share_token,
     };
   },
 
@@ -105,5 +107,54 @@ export const ProjectService = {
 
     if (error) throw error;
     return data;
+  },
+  async enableShareLink(projectId: string) {
+    const { data, error } = await supabase
+      .from("projects")
+      .update({ is_share_enabled: true })
+      .eq("id", projectId)
+      .select("share_token")
+      .single();
+
+    if (error) throw error;
+    return data.share_token;
+  },
+
+  // 2. Revogar / Desativar Link (Gerando um novo token para invalidar o antigo)
+  async disableShareLink(projectId: string) {
+    const { error } = await supabase
+      .from("projects")
+      .update({
+        is_share_enabled: false,
+        share_token: crypto.randomUUID(), // Gera um novo token para invalidar o link antigo
+      })
+      .eq("id", projectId);
+
+    if (error) throw error;
+  },
+
+  // 3. Entrar no Projeto usando o Token do Link
+  async joinProjectByToken(token: string): Promise<string> {
+    const { data, error } = await supabase.rpc("join_project_via_token", {
+      token_input: token,
+    });
+
+    if (error) throw error;
+    return data as string; // Retorna o projectId
+  },
+
+  // 4. Alterar a permissão de um membro (viewer <-> editor)
+  async updateMemberRole(
+    projectId: string,
+    memberUserId: string,
+    newRole: "editor" | "viewer",
+  ) {
+    const { error } = await supabase
+      .from("project_members")
+      .update({ role: newRole })
+      .eq("project_id", projectId)
+      .eq("user_id", memberUserId);
+
+    if (error) throw error;
   },
 };
