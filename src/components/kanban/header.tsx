@@ -5,6 +5,7 @@ import {
   EllipsisVertical,
   FileStack,
   LogOut,
+  Menu,
   Share2,
 } from "lucide-react";
 import { Input } from "../ui/input";
@@ -16,14 +17,23 @@ import { useAuthStore } from "@/store/use-auth-store";
 import { useRouter } from "@tanstack/react-router";
 import { ProfileModal } from "../profile-dialog";
 import { ShareModal } from "../share-dialog";
+import { AppSidebar } from "../sidebar";
+import { useSidebar } from "../ui/sidebar";
 
-export const KanbanHeader = ({ project_id }: { project_id: string }) => {
+export const KanbanHeader = ({
+  project_id,
+  onSelectProject,
+}: {
+  project_id: string;
+  onSelectProject?: (projectId: string) => void;
+}) => {
   const { updateProject, useProject } = useProjectsMutation();
   const { data: project } = useProject(project_id);
   const router = useRouter();
 
   const [localName, setLocalName] = useState(project?.name || "Kanban Board");
   const [showShared, setShowShared] = useState(false);
+  const { open, setOpen, toggleSidebar } = useSidebar();
 
   useEffect(() => {
     if (project?.name) {
@@ -120,6 +130,23 @@ export const KanbanHeader = ({ project_id }: { project_id: string }) => {
           >
             <LogOut className="size-4" />
           </button>
+          <button
+            type="button"
+            onClick={toggleSidebar}
+            className="p-0! m-0! size-8  text-sm  flex text-gray-200 items-center justify-center hover:contrast-125 transition-opacity bg-[#7B2EA8]/40 rounded-full duration-200 cursor-pointer"
+          >
+            <Menu className="size-4" />
+          </button>
+
+          <AppSidebar
+            currentProjectId={project_id}
+            isOpen={open}
+            onClose={() => setOpen(false)}
+            onSelectProject={(nextProjectId) => {
+              onSelectProject?.(nextProjectId);
+              setOpen(false);
+            }}
+          />
         </div>
       </div>
     </div>

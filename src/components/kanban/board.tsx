@@ -38,7 +38,13 @@ function flattenGrouped(
   );
 }
 
-export default function KanbanBoard({ project_id }: { project_id: string }) {
+export default function KanbanBoard({
+  project_id,
+  onSelectProject,
+}: {
+  project_id: string;
+  onSelectProject?: (projectId: string) => void;
+}) {
   const { tasks, columns, updateTaskBatch } = useKanban(project_id);
   const { createColumn } = useColumnMutation();
   const [localTasks, setLocalTasks] = useState<TaskResponse[]>(tasks);
@@ -154,8 +160,8 @@ export default function KanbanBoard({ project_id }: { project_id: string }) {
   };
 
   return (
-    <div className="flex flex-col h-screen gap-6 min:px-12 px-4">
-      <KanbanHeader project_id={project_id} />
+    <div className="flex flex-col h-screen w-full gap-6 min:px-12 px-4">
+      <KanbanHeader onSelectProject={onSelectProject} project_id={project_id} />
       <div className="flex-1 min-h-0 flex gap-4 overflow-x-auto w-full mb-4 custom-scroll">
         <DragDropProvider
           onDragStart={onDragStart}

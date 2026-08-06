@@ -69,6 +69,7 @@ export const Column = memo(function Column({
   );
 
   const softDeleteColumn = () => {
+    console.log("softDeleteColumn called");
     if (taskCount !== 0) return;
     updateColumn.mutate({ id, updates: { visibility: false } });
   };

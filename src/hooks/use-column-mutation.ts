@@ -41,6 +41,12 @@ export function useColumnMutation() {
       id: string;
       updates: Partial<ColumnUpdate>;
     }) => {
+      console.log(
+        "updateColumnMutation called with id:",
+        id,
+        "and updates:",
+        updates,
+      );
       return ColumnService.updateColumn(id, { ...updates });
     },
 
