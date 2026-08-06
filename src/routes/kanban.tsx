@@ -1,6 +1,10 @@
 /** @format */
 
-import { createFileRoute, useLocation, useRouter } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useLocation,
+  useRouter,
+} from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import KanbanBoard from "../components/kanban/board";
 import { useAuthStore } from "@/store/use-auth-store";
@@ -18,7 +22,9 @@ function RouteComponent() {
   const projects = useProjects();
   const router = useRouter();
   const location = useLocation();
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
+    null,
+  );
 
   const projectIdFromUrl = useMemo(() => {
     const params = new URLSearchParams(location.search ?? "");
@@ -29,19 +35,27 @@ function RouteComponent() {
     if (!projects.data?.length) return;
 
     if (projectIdFromUrl) {
-      const exists = projects.data.some((project) => project.id === projectIdFromUrl);
+      const exists = projects.data.some(
+        (project) => project.id === projectIdFromUrl,
+      );
       if (exists) {
         setSelectedProjectId(projectIdFromUrl);
         return;
       }
     }
 
-    if (!selectedProjectId || !projects.data.some((project) => project.id === selectedProjectId)) {
+    if (
+      !selectedProjectId ||
+      !projects.data.some((project) => project.id === selectedProjectId)
+    ) {
       const fallbackProjectId = projects.data[0].id;
       setSelectedProjectId(fallbackProjectId);
       router.navigate({
         to: "/kanban",
-        search: (prev: Record<string, unknown>) => ({ ...prev, projectId: fallbackProjectId }),
+        search: (prev: Record<string, unknown>) => ({
+          ...prev,
+          projectId: fallbackProjectId,
+        }),
       });
     }
   }, [projects.data, projectIdFromUrl, router, selectedProjectId]);
