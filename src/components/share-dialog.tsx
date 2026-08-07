@@ -81,8 +81,8 @@ export function ShareModal({
               Compartilhar{" "}
             </DialogTitle>
             <DialogDescription className="font-light">
-              Essa ação não pode ser desfeita. A coluna apagada não poderá mais
-              ser restaurada.
+              Compartilhe este projeto com outros usuários, permitindo que eles
+              visualizem ou editem o conteúdo.
             </DialogDescription>
           </DialogHeader>
           <FieldGroup className="gap-3 mt-4 flex flex-row">
@@ -127,7 +127,6 @@ export function ShareModal({
         </form>
         <div className="flex flex-col gap-2">
           {map(projectMembers, (item) => {
-            console.log(item);
             return (
               <span
                 key={item.id}

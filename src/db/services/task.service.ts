@@ -42,19 +42,10 @@ export const TaskService = {
       throw error;
     }
 
-    return (data || []).map((task: any) => ({
+    return (data ?? []).map(({ comments, ...task }) => ({
       ...task,
-      id: task.id,
-      column_id: task.column_id,
-      project_id: task.project_id,
-      order: task.order,
-      title: task.title,
-      description: task.description,
-      priority: task.priority,
-      tags: task.tags || [],
-      assignee: task.assignee,
-      due_date: task.due_date,
-      commentsCount: task.comments[0]?.count ?? 0,
+      tags: task.tags ?? [],
+      commentsCount: comments?.[0]?.count ?? 0,
     }));
   },
 

@@ -79,8 +79,7 @@ export const AuthService = {
       })
       .eq("id", user_id);
 
-    if (profileError)
-      return { id: user_id, data: null, error: profileError.message };
+    if (profileError) return { data: null, error: profileError.message };
 
     const { error: settingsError } = await supabase
       .from("profile_settings")
@@ -91,8 +90,7 @@ export const AuthService = {
       })
       .eq("user_id", user_id);
 
-    if (settingsError)
-      return { id: user_id, data: null, error: settingsError.message };
+    if (settingsError) return { data: null, error: settingsError.message };
 
     return this.getCurrentUserProfile(user_id);
   },

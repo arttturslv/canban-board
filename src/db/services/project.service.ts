@@ -47,6 +47,7 @@ export const ProjectService = {
     const { data, error } = await supabase
       .from("projects")
       .select("*, project_members!inner(user_id)")
+      .eq("project_members.user_id", user_id)
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -82,6 +83,7 @@ export const ProjectService = {
 
     if (memberError) {
       console.error("Erro ao associar o criador ao projeto:", memberError);
+      await supabase.from("projects").delete().eq("id", newProject.id);
       throw memberError;
     }
 

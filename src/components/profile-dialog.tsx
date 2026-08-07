@@ -109,8 +109,8 @@ export function ProfileModal({
         avatar_url,
         born_date: data.born_date,
         theme_dark: !!data.system?.theme_dark,
-        language: "pt-BR" as const,
-        notifications_enabled: false,
+        language: data.system?.language || ("pt-BR" as const),
+        notifications_enabled: data.system?.notifications_enabled || false,
       };
 
       const { data: profileUser, error } = await AuthService.updateUser({
