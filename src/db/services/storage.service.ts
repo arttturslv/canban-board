@@ -12,11 +12,11 @@ export const StorageService = {
   async compressAndStoreImage({
     bucket,
     file,
-    userId,
+    user_id,
   }: {
     bucket: string;
     file: File;
-    userId: string;
+    user_id: string;
   }): Promise<CompressAndStoreResult> {
     const fileExt = file.name.split(".").pop();
 
@@ -25,7 +25,7 @@ export const StorageService = {
     }
 
     const compressedFile = await compressImage(file);
-    const fileName = `public/${userId}/${Date.now()}.webp`;
+    const fileName = `public/${user_id}/${Date.now()}.webp`;
 
     const { data, error } = await supabase.storage
       .from(bucket)

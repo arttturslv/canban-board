@@ -4,7 +4,6 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { useState } from "react";
 import { ArrowRight, Layers, Tag, Brain } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -17,16 +16,6 @@ function RouteComponent() {
   const goToBoard = () => {
     navigate({ to: "/kanban" });
   };
-
-  const asica = async () => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    console.log(session);
-  };
-
-  asica();
 
   return (
     <div className="min-h-screen bg-[#211E21] text-zinc-100">

@@ -1,34 +1,47 @@
 /** @format */
 
+import { useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { TaskService } from "../db/services/task.service";
 import { ColumnService } from "../db/services/column.service";
-
 import type { TaskInput } from "../db/schemas";
 import { toast } from "sonner";
 
-export function useKanban(projectId: string) {
+const EMPTY_ARRAY: any[] = [];
+
+export function useKanban(project_id: string) {
   const queryClient = useQueryClient();
 
   const tasksQuery = useQuery({
-    queryKey: ["tasks", projectId],
-    queryFn: () => TaskService.getTasksWithProps(projectId),
+    queryKey: ["tasks", project_id],
+    queryFn: () => TaskService.getTasksWithProps(project_id),
+    enabled: !!project_id,
   });
 
   const columnsQuery = useQuery({
-    queryKey: ["columns"],
-    queryFn: () => ColumnService.getColumns(projectId),
+    queryKey: ["columns", project_id],
+    queryFn: () => ColumnService.getColumns(project_id),
+    enabled: !!project_id,
   });
+
+  const tasks = useMemo(
+    () => tasksQuery.data ?? EMPTY_ARRAY,
+    [tasksQuery.data],
+  );
+  const columns = useMemo(
+    () => columnsQuery.data ?? EMPTY_ARRAY,
+    [columnsQuery.data],
+  );
 
   const updateTasksBatchMutation = useMutation({
     mutationFn: (updatedTasks: { id: string; updates: Partial<TaskInput> }[]) =>
       TaskService.updateTaskBatch(updatedTasks),
     onMutate: async (updatedTaskList) => {
-      await queryClient.cancelQueries({ queryKey: ["tasks", projectId] });
-      const prevTasks = queryClient.getQueryData<any[]>(["tasks", projectId]);
+      await queryClient.cancelQueries({ queryKey: ["tasks", project_id] });
+      const prevTasks = queryClient.getQueryData<any[]>(["tasks", project_id]);
 
       queryClient.setQueryData(
-        ["tasks", projectId],
+        ["tasks", project_id],
         (oldTasks: any[] | undefined) => {
           if (!oldTasks) return [];
 
@@ -47,10 +60,10 @@ export function useKanban(projectId: string) {
       return { prevTasks };
     },
     onError: (_err, _variables, context) => {
-      queryClient.setQueryData(["tasks", projectId], context?.prevTasks);
+      queryClient.setQueryData(["tasks", project_id], context?.prevTasks);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", projectId] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", project_id] });
     },
   });
 
@@ -58,17 +71,15 @@ export function useKanban(projectId: string) {
     mutationFn: ({ task }: { task: TaskInput }) => {
       return TaskService.addTask(task);
     },
-
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", projectId] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", project_id] });
     },
-
     onError: () => toast.warning("Algo deu errado ao criar uma task"),
   });
 
   return {
-    tasks: tasksQuery.data || [],
-    columns: columnsQuery.data || [],
+    tasks,
+    columns,
     updateTaskBatch: updateTasksBatchMutation,
     createTask: createTaskMutation,
     isLoading: tasksQuery.isLoading || columnsQuery.isLoading,

@@ -7,14 +7,23 @@ import type { ProjectInput } from "../db/schemas";
 export function useProjectsMutation() {
   const queryClient = useQueryClient();
 
-  const useProject = (projectId: string | null) => {
+  const useProjects = () => {
     return useQuery({
-      queryKey: ["project", projectId],
+      queryKey: ["projects"],
       queryFn: () => {
-        return ProjectService.getProjectById(projectId!);
+        return ProjectService.getProjects();
+      },
+    });
+  };
+
+  const useProject = (project_id: string | null) => {
+    return useQuery({
+      queryKey: ["project", project_id],
+      queryFn: () => {
+        return ProjectService.getProjectById(project_id!);
       },
 
-      enabled: !!projectId,
+      enabled: !!project_id,
     });
   };
 
@@ -52,6 +61,7 @@ export function useProjectsMutation() {
   });
 
   return {
+    useProjects: useProjects,
     useProject: useProject,
     updateProject: updateProjectMutation,
   };

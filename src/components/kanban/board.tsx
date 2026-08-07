@@ -14,7 +14,7 @@ import { Plus } from "lucide-react";
 import { useColumnMutation } from "@/hooks/use-column-mutation";
 
 function buildGroupedTasks(tasks: TaskResponse[], columns: ColumnType[]) {
-  const tasksByColumn = groupBy(tasks, (task) => task.columnId);
+  const tasksByColumn = groupBy(tasks, (task) => task.column_id);
 
   return Object.fromEntries(
     columns
@@ -32,14 +32,20 @@ function flattenGrouped(
   return Object.entries(grouped).flatMap(([colId, tasks]) =>
     tasks.map((task, idx) => ({
       ...task,
-      columnId: colId,
+      column_id: colId,
       order: idx * 100,
     })),
   );
 }
 
-export default function KanbanBoard({ projectId }: { projectId: string }) {
-  const { tasks, columns, updateTaskBatch } = useKanban(projectId);
+export default function KanbanBoard({
+  project_id,
+  onSelectProject,
+}: {
+  project_id: string;
+  onSelectProject?: (projectId: string) => void;
+}) {
+  const { tasks, columns, updateTaskBatch } = useKanban(project_id);
   const { createColumn } = useColumnMutation();
   const [localTasks, setLocalTasks] = useState<TaskResponse[]>(tasks);
   const isDragging = useRef(false);
@@ -125,20 +131,21 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
     const dbTaskMap = new Map(tasks.map((t) => [t.id, t]));
     const batchUpdates: {
       id: string;
-      updates: { order: number; columnId: string };
+      updates: { order: number; column_id: string; project_id: string };
     }[] = [];
 
     finalTasks.forEach((finalTask) => {
       const dbTask = dbTaskMap.get(finalTask.id);
       if (
         !dbTask ||
-        dbTask.columnId !== finalTask.columnId ||
+        dbTask.column_id !== finalTask.column_id ||
         dbTask.order !== finalTask.order
       ) {
         batchUpdates.push({
           id: finalTask.id,
           updates: {
-            columnId: finalTask.columnId,
+            project_id: project_id,
+            column_id: finalTask.column_id,
             order: finalTask.order,
           },
         });
@@ -153,8 +160,8 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
   };
 
   return (
-    <div className="flex flex-col h-screen gap-6 min:px-12 px-4">
-      <KanbanHeader projectId={projectId} />
+    <div className="flex flex-col h-screen w-full gap-6 min:px-12 px-4">
+      <KanbanHeader onSelectProject={onSelectProject} project_id={project_id} />
       <div className="flex-1 min-h-0 flex gap-4 overflow-x-auto w-full mb-4 custom-scroll">
         <DragDropProvider
           onDragStart={onDragStart}
@@ -164,7 +171,7 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
           {map(board, (col) => {
             return (
               <Column
-                projectId={projectId}
+                project_id={project_id}
                 index={col.order}
                 key={col.id}
                 taskAction={openTask}
@@ -185,9 +192,9 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
                   index={activeTask.order}
                   description={activeTask.description}
                   assignee={activeTask.assignee}
-                  dueDate={activeTask.dueDate}
+                  due_date={activeTask.due_date}
                   commentsCount={activeTask.commentsCount}
-                  columnId={activeTask.columnId}
+                  column_id={activeTask.column_id}
                   action={() => console.log("")}
                   mock={true}
                 />
@@ -197,7 +204,12 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
         </DragDropProvider>
         <button
           onClick={() =>
-            createColumn.mutate({ column: { projectId, title: "Nova coluna" } })
+            createColumn.mutate({
+              column: {
+                project_id,
+                title: "Nova coluna",
+              },
+            })
           }
           className="flex items-center shrink-0 max-h-12 text-sm sm:max-w-[25vw] justify-center gap-1 py-2 border-[1.5px] border-dashed w-full rounded-full  border-white opacity-30  hover:opacity-50 transition-opacity duration-200 cursor-pointer max-sm:w-64"
         >
@@ -206,7 +218,7 @@ export default function KanbanBoard({ projectId }: { projectId: string }) {
         </button>
       </div>
       <EditTaskSheet
-        projectId={projectId}
+        project_id={project_id}
         open={!!sheetOpen}
         taskId={sheetOpen}
         onClose={closeEditTaskSheet}

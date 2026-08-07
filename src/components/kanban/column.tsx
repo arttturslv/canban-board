@@ -18,7 +18,7 @@ interface ColumnProps {
   title: string;
   taskAction: (taskId: string) => void;
   tasks: TaskResponse[];
-  projectId: string;
+  project_id: string;
   index: number;
 }
 export const Column = memo(function Column({
@@ -26,10 +26,10 @@ export const Column = memo(function Column({
   title,
   taskAction,
   tasks,
-  projectId,
+  project_id,
   index,
 }: ColumnProps) {
-  const { createTask } = useTaskMutations(projectId);
+  const { createTask } = useTaskMutations(project_id);
   const [showNewTask, setShowNewTask] = useState(false);
   const { ref, isDropTarget } = useDroppable({
     id,
@@ -69,6 +69,7 @@ export const Column = memo(function Column({
   );
 
   const softDeleteColumn = () => {
+    console.log("softDeleteColumn called");
     if (taskCount !== 0) return;
     updateColumn.mutate({ id, updates: { visibility: false } });
   };
@@ -98,13 +99,13 @@ export const Column = memo(function Column({
         {tasks.map((task, index) => (
           <TaskItem
             index={index}
-            columnId={id}
+            column_id={id}
             action={taskAction}
             key={task.id}
             assignee={task.assignee}
             commentsCount={task.commentsCount !== 0 ? task.commentsCount : null}
             description={task.description}
-            dueDate={task.dueDate}
+            due_date={task.due_date}
             id={task.id}
             priority={task.priority}
             title={task.title}
@@ -113,11 +114,11 @@ export const Column = memo(function Column({
       </div>
       <div className="flex justify-center flex-col  items-center mt-4 w-full">
         <NewTask
-          columnId={id}
-          projectId={projectId}
+          column_id={id}
+          project_id={project_id}
           isOpen={showNewTask}
           onClose={() => setShowNewTask(false)}
-          onSave={createTask.mutate}
+          onSave={(taskData) => createTask.mutate({ task: taskData })}
         />
 
         {!showNewTask && (

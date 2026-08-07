@@ -11,9 +11,9 @@ interface TaskItemProps {
   description: string | null;
   priority: "low" | "medium" | "high" | "urgent";
   assignee: string | null;
-  dueDate: string | null;
+  due_date: string | null;
   commentsCount: number | null;
-  columnId: string;
+  column_id: string;
   action: (taskId: string) => void;
   mock?: boolean;
 }
@@ -26,9 +26,9 @@ export const TaskItem = memo(function TaskItem({
   description,
   priority,
   assignee,
-  dueDate,
+  due_date,
   commentsCount,
-  columnId,
+  column_id,
   mock,
 }: TaskItemProps) {
   let priorityColor = getPriorityColor(priority);
@@ -40,7 +40,7 @@ export const TaskItem = memo(function TaskItem({
         id: id,
         index,
         type: "task",
-        group: columnId,
+        group: column_id,
         accept: "task",
       });
 
@@ -85,10 +85,10 @@ export const TaskItem = memo(function TaskItem({
             )}
           </span>
 
-          {dueDate && (
+          {due_date && (
             <p className="flex gap-1 items-center">
               <Calendar className="size-3" />{" "}
-              {new Date(dueDate).toLocaleDateString("pt-BR")}
+              {new Date(due_date).toLocaleDateString("pt-BR")}
             </p>
           )}
         </span>
